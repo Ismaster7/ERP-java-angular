@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -22,7 +23,6 @@ public class Supplier implements Serializable {
     // CPF ou CNPJ
     @Column(unique = true)
     private Document document;
-
     private String name;
     private String email;
     private Cep cep;
@@ -32,7 +32,7 @@ public class Supplier implements Serializable {
     @Column(name = "birthday_date")
     private LocalDate birthDate;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "enterprise_supplier",
             joinColumns = @JoinColumn(name = "supplier_id"),
@@ -50,6 +50,11 @@ public class Supplier implements Serializable {
         this.cep = cep;
         this.rg = rg;
         this.birthDate = birthDate;
+    }
+
+    public void addEnterprise(Enterprise enterprise) {
+        enterprises.add(enterprise);
+        enterprise.getSuppliers().add(this);
     }
 
     public Long getSupplierId() {
@@ -122,5 +127,17 @@ public class Supplier implements Serializable {
 
     public void setEnterprises(Set<Enterprise> enterprises) {
         this.enterprises = enterprises;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Supplier supplier = (Supplier) object;
+        return Objects.equals(document, supplier.document) && Objects.equals(cep, supplier.cep);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(document, cep);
     }
 }

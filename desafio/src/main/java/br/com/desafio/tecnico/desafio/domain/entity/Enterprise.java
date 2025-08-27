@@ -43,6 +43,11 @@ public class Enterprise implements Serializable {
         this.tradeName = tradeName;
         this.cep = cep;
     }
+    public void addSupplier(Supplier supplier) {
+        suppliers.add(supplier);
+        supplier.getEnterprises().add(this);
+    }
+
 
     public Long getEnterpriseId() {
         return enterpriseId;
@@ -84,5 +89,15 @@ public class Enterprise implements Serializable {
         this.suppliers = suppliers;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Enterprise that = (Enterprise) object;
+        return Objects.equals(cnpj, that.cnpj) && Objects.equals(cep, that.cep);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(cnpj, cep);
+    }
 }
