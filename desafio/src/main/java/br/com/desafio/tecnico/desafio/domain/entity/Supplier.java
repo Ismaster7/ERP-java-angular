@@ -1,0 +1,126 @@
+package br.com.desafio.tecnico.desafio.domain.entity;
+
+import br.com.desafio.tecnico.desafio.domain.enums.SupplierType;
+import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
+import br.com.desafio.tecnico.desafio.domain.valueObject.Document;
+import jakarta.persistence.*;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "fornecedor")
+public class Supplier implements Serializable {
+    private static final long serialVersionUID = 1l;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "supplier_id")
+    private Long supplierId;
+    // CPF ou CNPJ
+    @Column(unique = true)
+    private Document document;
+
+    private String name;
+    private String email;
+    private Cep cep;
+    @Enumerated(EnumType.ORDINAL)
+    private SupplierType type;
+    private String rg;
+    @Column(name = "birthday_date")
+    private LocalDate birthDate;
+
+    @ManyToMany
+    @JoinTable(
+            name = "enterprise_supplier",
+            joinColumns = @JoinColumn(name = "supplier_id"),
+            inverseJoinColumns = @JoinColumn(name = "enterprise_id")
+    )
+    private Set<Enterprise> enterprises = new HashSet<>();
+
+    public Supplier(Document document, String name, String email, Cep cep, String rg, LocalDate birthDate) {
+        if (document.isCpf() && (rg == null || birthDate == null)) {
+            throw new IllegalArgumentException("Pessoa física precisa de RG e Data de Nascimento");
+        }
+        this.document = document;
+        this.name = name;
+        this.email = email;
+        this.cep = cep;
+        this.rg = rg;
+        this.birthDate = birthDate;
+    }
+
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Long supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public Document getDocument() {
+        return document;
+    }
+
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Cep getCep() {
+        return cep;
+    }
+
+    public void setCep(Cep cep) {
+        this.cep = cep;
+    }
+
+    public SupplierType getType() {
+        return type;
+    }
+
+    public void setType(SupplierType type) {
+        this.type = type;
+    }
+
+    public String getRg() {
+        return rg;
+    }
+
+    public void setRg(String rg) {
+        this.rg = rg;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public Set<Enterprise> getEnterprises() {
+        return enterprises;
+    }
+
+    public void setEnterprises(Set<Enterprise> enterprises) {
+        this.enterprises = enterprises;
+    }
+}

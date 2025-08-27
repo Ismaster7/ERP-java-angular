@@ -1,6 +1,6 @@
 package br.com.desafio.tecnico.desafio.domain.dto;
 
-import br.com.desafio.tecnico.desafio.domain.enums.Tipo;
+import br.com.desafio.tecnico.desafio.domain.enums.SupplierType;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -24,7 +24,7 @@ public record FornecedorRequestDto(
         String cep,
 
         @NotNull
-        Tipo tipo,
+        SupplierType tipo,
 
 // Apenas para pessoa física
         String rg,

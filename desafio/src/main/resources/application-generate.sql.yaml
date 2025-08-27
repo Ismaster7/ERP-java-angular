@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:scriptdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: create
+          schema_generation:
+            script_ddl: schema.sql
+            create_source: metadata
+            output_mode: script
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.tool.schema.internal: DEBUG
