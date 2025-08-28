@@ -38,7 +38,14 @@ public class CepService {
         return response.getBody();
     }
 
+
     public boolean isFromSpecificState(String[] states, String cep){
+        var cepApi = consultCep(cep);
+        System.out.print(cepApi);
+
+        return true;
 
     }
+
+
 }

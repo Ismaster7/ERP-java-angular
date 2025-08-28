@@ -30,7 +30,7 @@ public class EnterpriseService {
 
     public Enterprise saveEnterprise(Enterprise enterprise){
         // regra 1: CNPJ deve ser único
-        boolean exists = enterpriseRepository.existsByCnpjValue(enterprise.getCnpj().getDocument());
+        boolean exists = enterpriseRepository.existsByCnpj(enterprise.getCnpj().toString());
         if (exists) {
             throw new IllegalArgumentException("Enterprise with this CNPJ already exists");
         }
@@ -72,7 +72,7 @@ public class EnterpriseService {
         Enterprise enterprise = getEnterpriseById(enterpriseId);
         cepService.consultCep(enterprise.getCep().getValue());
         // regra 3: Empresa do PR não pode ter fornecedor PF menor de idade
-        if (cepService.isFromSpecificState(new String[] ,enterprise.getCep().getValue()) && supplier.getDocument().isCpf()) {
+        if (cepService.isFromSpecificState(new String[]{"parana", "paraná"} ,enterprise.getCep().getValue()) && supplier.getDocument().isCpf()) {
             if (supplier.getBirthDate() == null || supplier.getBirthDate().plusYears(18).isAfter(LocalDate.now())) {
                 throw new IllegalArgumentException("Fornecedor menor de idade não pode ser adicionado com Cep do Paraná");
             }
