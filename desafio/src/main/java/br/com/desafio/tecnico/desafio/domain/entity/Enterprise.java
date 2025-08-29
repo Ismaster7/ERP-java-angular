@@ -1,6 +1,7 @@
 package br.com.desafio.tecnico.desafio.domain.entity;
 
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
+import br.com.desafio.tecnico.desafio.domain.valueObject.Cnpj;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Document;
 import jakarta.persistence.*;
 
@@ -18,13 +19,12 @@ public class Enterprise implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "enterprise_id")
     private Long enterpriseId;
-
-    @Column(unique = true)
-    private Document cnpj;
+    @Embedded
+    private Cnpj cnpj;
 
     @Column(name = "trade_name", unique = true)
     private String tradeName;
-
+    @Embedded
     private Cep cep;
     @ManyToMany(mappedBy = "enterprises")
     private Set<Supplier> suppliers = new HashSet<>();
@@ -32,8 +32,8 @@ public class Enterprise implements Serializable {
     public Enterprise() {
     }
 
-    public Enterprise(Document cnpj, String tradeName, Cep cep) {
-        if (!cnpj.isCnpj()) {
+    public Enterprise(Cnpj cnpj, String tradeName, Cep cep) {
+        if (!cnpj.isValid()) {
             throw new IllegalArgumentException("CNPJ inválido");
             /* criei este validador no construtor para lógicas de negócio interno.
             para validação da chegada da requisição, usei o @Validation do Spring mesmo.
@@ -57,11 +57,11 @@ public class Enterprise implements Serializable {
         this.enterpriseId = enterpriseId;
     }
 
-    public Document getCnpj() {
+    public Cnpj getCnpj() {
         return cnpj;
     }
 
-    public void setCnpj(Document cnpj) {
+    public void setCnpj(Cnpj cnpj) {
         this.cnpj = cnpj;
     }
 

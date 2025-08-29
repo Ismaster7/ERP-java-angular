@@ -1,13 +1,12 @@
 package br.com.desafio.tecnico.desafio.presentation.controller;
 
+import br.com.desafio.tecnico.desafio.application.mapper.EnterpriseMapper;
 import br.com.desafio.tecnico.desafio.application.services.EnterpriseService;
+import br.com.desafio.tecnico.desafio.domain.dto.EnterpriseRequestDto;
 import br.com.desafio.tecnico.desafio.domain.entity.Enterprise;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,8 +14,9 @@ import java.util.List;
 @RequestMapping("api/enterprise/v1")
 public class EnterpriseController {
     private final EnterpriseService enterpriseService;
-
-    public EnterpriseController(EnterpriseService enterpriseService){
+    private final EnterpriseMapper enterpriseMapper;
+    public EnterpriseController(EnterpriseService enterpriseService, EnterpriseMapper enterpriseMapper){
+        this.enterpriseMapper = enterpriseMapper;
         this.enterpriseService = enterpriseService;
     }
 
@@ -26,7 +26,7 @@ public class EnterpriseController {
     }
 
     @PostMapping
-    public ResponseEntity<Enterprise> createNewEnterprise(Enterprise enterprise){
-        return ResponseEntity.status(HttpStatus.CREATED).body(enterpriseService.saveEnterprise(enterprise));
+    public ResponseEntity<Enterprise> createNewEnterprise(@RequestBody EnterpriseRequestDto enterprise){
+        return ResponseEntity.status(HttpStatus.CREATED).body(enterpriseService.saveEnterprise(enterpriseMapper.toEntity(enterprise)));
     }
 }

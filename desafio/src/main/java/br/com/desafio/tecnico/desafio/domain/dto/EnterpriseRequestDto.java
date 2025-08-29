@@ -13,13 +13,9 @@ public record EnterpriseRequestDto(
 
         Long enterpriseId,
         @NotBlank
-
-        Document cnpj,
-
+        String cnpj,
         String tradeName,
-
-        Cep cep,
-
+        String cep,
         Set<Supplier> suppliers
 ) {
 }

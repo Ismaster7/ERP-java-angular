@@ -9,7 +9,7 @@ public class Cep {
 
     protected Cep() {}
 
-    private Cep(String cepValue) {
+    public Cep(String cepValue) {
         if (!isValidCep(cepValue)) {
             throw new IllegalArgumentException("Cep Inválido");
             /* criei este validador no construtor para lógicas de negócio interno.

@@ -1,23 +1,24 @@
 package br.com.desafio.tecnico.desafio.domain.valueObject;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class Document {
+public class Document extends DocumentBase {
 
+    @Column(name = "document", unique = true)
     private String document;
 
     protected Document() {}
 
-    private Document(String document) {
-        if (!isValidCpf(document) && !isValidCnpj(document)) {
-
+    public Document(String document) {
+        if(this.isValid()){
+            this.document = document.replaceAll("\\D", "");
+        }else{
             throw new IllegalArgumentException("CPf ou Cnpj inválido");
             /* criei este validador no construtor para lógicas de negócio interno.
             para validação da chegada da requisição, usei o @Validation do Spring mesmo.
              */
         }
-        this.document = document.replaceAll("\\D", "");
     }
 
     public static Document of(String value) {
@@ -40,8 +41,18 @@ public class Document {
         // implementação clássica do cálculo de dígitos verificadores
         return cpf != null && cpf.replaceAll("\\D", "").length() == 11;
     }
+    @Override
+    public String toString(){
+        return this.getDocument();
+    }
 
-    private boolean isValidCnpj(String cnpj) {
-        return cnpj != null && cnpj.replaceAll("\\D", "").length() == 14;
+
+
+    @Override
+    public boolean isValid() {
+        if (!isValidCpf(document) && !isValidCnpj(document)) {
+            return false;
+        }
+        return true;
     }
 }

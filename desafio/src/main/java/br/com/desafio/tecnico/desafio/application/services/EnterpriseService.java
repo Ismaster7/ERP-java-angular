@@ -4,6 +4,7 @@ import br.com.desafio.tecnico.desafio.domain.entity.Enterprise;
 import br.com.desafio.tecnico.desafio.domain.entity.Supplier;
 import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.EnterpriseNotFound;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.EnterpriseRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,17 +28,17 @@ public class EnterpriseService {
         return enterpriseRepository.findById(id)
                 .orElseThrow(EnterpriseNotFound::new);
     }
-
+    @Transactional
     public Enterprise saveEnterprise(Enterprise enterprise){
         // regra 1: CNPJ deve ser único
-        boolean exists = enterpriseRepository.existsByCnpj(enterprise.getCnpj().toString());
+        boolean exists = enterpriseRepository.existsByCnpj(enterprise.getCnpj());
         if (exists) {
             throw new IllegalArgumentException("Enterprise with this CNPJ already exists");
         }
 
         return enterpriseRepository.save(enterprise);
     }
-
+    @Transactional
     public Enterprise updateEnterprise(Long id, Enterprise newEnterprise) {
         var oldEnterprise = getEnterpriseById(id);
 
@@ -60,7 +61,7 @@ public class EnterpriseService {
         return enterpriseRepository.save(oldEnterprise);
     }
 
-
+    @Transactional
     public void removeEnterprise(Long id){
         enterpriseRepository.deleteById(id);
     }

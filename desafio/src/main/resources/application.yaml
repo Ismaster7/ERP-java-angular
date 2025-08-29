@@ -1,5 +1,5 @@
 spring:
   profiles:
-    active: generate-sql
+    active: dev
 cep:
   api: https://cep.la/{cep}
