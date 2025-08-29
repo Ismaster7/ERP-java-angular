@@ -11,6 +11,7 @@ public class Document extends DocumentBase {
     protected Document() {}
 
     public Document(String document) {
+        this.document = document;
         if(this.isValid()){
             this.document = document.replaceAll("\\D", "");
         }else{

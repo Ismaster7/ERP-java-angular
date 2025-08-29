@@ -1,8 +1,11 @@
-package br.com.desafio.tecnico.desafio.domain.entity;
+package br.com.desafio.tecnico.desafio.domain.entity.supplier;
 
+import br.com.desafio.tecnico.desafio.domain.entity.enterprise.Enterprise;
 import br.com.desafio.tecnico.desafio.domain.enums.SupplierType;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Document;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -31,13 +34,13 @@ public class Supplier implements Serializable {
     private String rg;
     @Column(name = "birthday_date")
     private LocalDate birthDate;
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(
             name = "enterprise_supplier",
             joinColumns = @JoinColumn(name = "supplier_id"),
             inverseJoinColumns = @JoinColumn(name = "enterprise_id")
     )
+    @JsonIgnoreProperties("suppliers")
     private Set<Enterprise> enterprises = new HashSet<>();
 
     public Supplier(Document document, String name, String email, Cep cep, String rg, LocalDate birthDate) {

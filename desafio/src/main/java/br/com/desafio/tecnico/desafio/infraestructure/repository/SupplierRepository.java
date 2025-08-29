@@ -1,6 +1,6 @@
 package br.com.desafio.tecnico.desafio.infraestructure.repository;
 
-import br.com.desafio.tecnico.desafio.domain.entity.Supplier;
+import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

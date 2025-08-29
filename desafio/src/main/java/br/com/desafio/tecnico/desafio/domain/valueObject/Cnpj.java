@@ -12,8 +12,8 @@ public class Cnpj extends DocumentBase{
     }
 
     public Cnpj(String cnpj) {
-        if(this.isValid()){
-            this.document = cnpj;
+        this.document = cnpj;
+        if(isValid()){
             this.document = document.replaceAll("\\D", "");
         }else{
             throw new IllegalArgumentException("CNPJ inválido!");

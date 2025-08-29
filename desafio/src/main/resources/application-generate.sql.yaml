@@ -26,3 +26,5 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.tool.schema.internal: DEBUG
+
+  # http://cep.la/api/

@@ -1,5 +1,5 @@
 spring:
   profiles:
-    active: dev
+    active: generate-sql
 cep:
-  api: https://cep.la/{cep}
+  api: https://viacep.com.br/ws/{cep}/json/

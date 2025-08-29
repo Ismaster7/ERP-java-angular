@@ -1,8 +1,10 @@
-package br.com.desafio.tecnico.desafio.domain.entity;
+package br.com.desafio.tecnico.desafio.domain.entity.enterprise;
 
+import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cnpj;
-import br.com.desafio.tecnico.desafio.domain.valueObject.Document;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -26,7 +28,9 @@ public class Enterprise implements Serializable {
     private String tradeName;
     @Embedded
     private Cep cep;
+
     @ManyToMany(mappedBy = "enterprises")
+    @JsonIgnoreProperties("enterprises")
     private Set<Supplier> suppliers = new HashSet<>();
 
     public Enterprise() {

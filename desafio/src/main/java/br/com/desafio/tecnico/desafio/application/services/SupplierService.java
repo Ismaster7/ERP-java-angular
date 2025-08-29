@@ -1,6 +1,6 @@
 package br.com.desafio.tecnico.desafio.application.services;
 
-import br.com.desafio.tecnico.desafio.domain.entity.Supplier;
+import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.EnterpriseNotFound;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.SupplierRepository;
 import org.springframework.stereotype.Service;

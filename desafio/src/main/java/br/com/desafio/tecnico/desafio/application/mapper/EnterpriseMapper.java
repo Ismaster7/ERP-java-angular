@@ -1,10 +1,9 @@
 package br.com.desafio.tecnico.desafio.application.mapper;
 
-import br.com.desafio.tecnico.desafio.domain.dto.EnterpriseRequestDto;
-import br.com.desafio.tecnico.desafio.domain.entity.Enterprise;
+import br.com.desafio.tecnico.desafio.domain.entity.enterprise.EnterpriseRequestDto;
+import br.com.desafio.tecnico.desafio.domain.entity.enterprise.Enterprise;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cnpj;
-import br.com.desafio.tecnico.desafio.domain.valueObject.Document;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,9 +27,6 @@ public class EnterpriseMapper {
             entity.setTradeName(enterpriseRequestDto.tradeName());
         }
 
-        if(enterpriseRequestDto.suppliers() != null){
-            entity.setSuppliers(enterpriseRequestDto.suppliers());
-        }
         return entity;
     }
 
