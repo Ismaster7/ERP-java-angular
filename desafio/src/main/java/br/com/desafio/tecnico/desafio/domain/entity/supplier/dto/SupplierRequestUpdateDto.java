@@ -14,7 +14,7 @@ public record SupplierRequestUpdateDto(
          String name,
          String email,
          String cep,
-        Integer type,
+        //Integer type,
          String rg,
          LocalDate birthDate,
          Set<Long> enterprises

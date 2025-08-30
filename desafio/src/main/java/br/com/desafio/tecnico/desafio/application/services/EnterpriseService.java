@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -69,7 +70,7 @@ public class EnterpriseService {
 
             boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state.cep());
             if(result){
-                validateAndFetchSuppliersForEnterprise(suppliers, state.cep());
+                validateAndFetchSuppliersForEnterprise(suppliers);
             }
 
             for (Supplier supplier : suppliers) {
@@ -84,18 +85,17 @@ public class EnterpriseService {
 
     @Transactional
     public EnterpriseResponseDto updateEnterprise(EnterpriseRequestUpdateDto enterpriseRequestUpdateDto) {
-        // busca a empresa antiga
+        // busca a empresa existente
         var oldEnterprise = enterpriseRepository.findById(enterpriseRequestUpdateDto.enterpriseId())
                 .orElseThrow(EnterpriseNotFoundException::new);
 
-        // Consulta e valida CEP
+        // consulta e valida o CEP
         var state = cepService.consultCep(enterpriseRequestUpdateDto.cep());
 
-
-        // Converte request para entidade temporária
+        // converte request em entidade temporária
         var newEnterprise = enterpriseMapper.toEntity(enterpriseRequestUpdateDto);
 
-        // Atualiza CEP, tradeName e CNPJ
+        // atualiza campos básicos
         if (newEnterprise.getCep() != null && !newEnterprise.getCep().equals(oldEnterprise.getCep())) {
             oldEnterprise.setCep(newEnterprise.getCep());
         }
@@ -106,25 +106,31 @@ public class EnterpriseService {
             oldEnterprise.setCnpj(newEnterprise.getCnpj());
         }
 
+        // atualização da lista de suppliers
         if (enterpriseRequestUpdateDto.suppliers() != null) {
-
             Set<Supplier> newSuppliers = StreamSupport
                     .stream(supplierRepository.findAllById(enterpriseRequestUpdateDto.suppliers()).spliterator(), false)
                     .collect(Collectors.toSet());
 
+            // valida se precisa aplicar regras de CEP proibido
             boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state.cep());
             if (result) {
-                validateAndFetchSuppliersForEnterprise(newSuppliers, state.cep());
+                validateAndFetchSuppliersForEnterprise(newSuppliers);
             }
 
-            oldEnterprise.getSuppliers().stream()
-                    .filter(s -> !newSuppliers.contains(s))
-                    .forEach(oldEnterprise::removeSupplier);
+            // remove fornecedores antigos que não estão mais na nova lista
+            Set<Supplier> suppliersToRemove = new HashSet<>(oldEnterprise.getSuppliers());
+            suppliersToRemove.removeAll(newSuppliers);
+            for (Supplier supplier : suppliersToRemove) {
+                oldEnterprise.removeSupplier(supplier);
+            }
 
-            // Adiciona novos fornecedores
-            newSuppliers.stream()
-                    .filter(s -> !oldEnterprise.getSuppliers().contains(s))
-                    .forEach(oldEnterprise::addSupplier);
+            // adiciona os novos fornecedores que não estavam antes
+            Set<Supplier> suppliersToAdd = new HashSet<>(newSuppliers);
+            suppliersToAdd.removeAll(oldEnterprise.getSuppliers());
+            for (Supplier supplier : suppliersToAdd) {
+                oldEnterprise.addSupplier(supplier);
+            }
         }
 
         return enterpriseMapper.toDto(enterpriseRepository.save(oldEnterprise));
@@ -132,10 +138,11 @@ public class EnterpriseService {
 
 
 
-    public void validateAndFetchSuppliersForEnterprise(Set<Supplier> suppliers, String state) {
+
+    public void validateAndFetchSuppliersForEnterprise(Set<Supplier> suppliers) {
             LocalDate actualDate = LocalDate.now();
             for (Supplier supplier : suppliers) {
-                if (supplier.getType().equals(SupplierType.fromInt(0)) &&
+                if (supplier.getType().equals(SupplierType.FISICA) &&
                         supplier.getBirthDate() != null &&
                         supplier.getBirthDate().plusYears(18).isAfter(actualDate)) {
 

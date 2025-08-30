@@ -4,8 +4,8 @@ import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierRespons
 import br.com.desafio.tecnico.desafio.presentation.serializer.view.JsonViews;
 import com.fasterxml.jackson.annotation.JsonView;
 
-import java.util.Set;
 
+import java.util.Set;
 public record EnterpriseResponseDto(
         @JsonView(JsonViews.Default.class)
         Long enterpriseId,

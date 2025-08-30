@@ -39,7 +39,7 @@ public class Document extends DocumentBase {
         return document;
     }
 
-    private boolean isValidCpf(String cpf) {
+    public boolean isValidCpf(String cpf) {
         // implementação clássica do cálculo de dígitos verificadores
         return cpf != null && cpf.replaceAll("\\D", "").length() == 11;
     }

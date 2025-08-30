@@ -46,13 +46,13 @@ public class Enterprise implements Serializable {
     }
 
     public void addSupplier(Supplier supplier) {
-        this.suppliers.add(supplier);          // atualiza o lado inverso
-        supplier.getEnterprises().add(this);   // atualiza o lado dono
+        this.suppliers.add(supplier);
+        supplier.getEnterprises().add(this);
     }
 
     public void removeSupplier(Supplier supplier) {
-        this.suppliers.remove(supplier);       // remove do lado inverso
-        supplier.getEnterprises().remove(this); // remove do lado dono
+        this.suppliers.remove(supplier);
+        supplier.getEnterprises().remove(this);
     }
 
 

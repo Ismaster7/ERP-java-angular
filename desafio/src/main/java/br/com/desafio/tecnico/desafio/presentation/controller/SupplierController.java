@@ -6,6 +6,7 @@ import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierRequest
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierRequestUpdateDto;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierResponseDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,22 +21,26 @@ public class SupplierController {
         this.supplierService = supplierService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = {
+        MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SupplierResponseDto> getSupplier(@PathVariable(name="id") Long id){
         return ResponseEntity.status(HttpStatus.FOUND).body(supplierService.getEnterpriseById(id));
     }
 
-    @GetMapping
+    @GetMapping(produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<Set<SupplierResponseDto>> getAllSuppliers(){
         return ResponseEntity.status(HttpStatus.FOUND).body(supplierService.getAllSuppliers());
     }
 
-    @PostMapping
+    @PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SupplierResponseDto> saveSupplier(@RequestBody SupplierRequestDto supplierRequestDto){
         return ResponseEntity.status(HttpStatus.CREATED).body( supplierService.saveSupplier(supplierRequestDto));
     }
 
-    @PutMapping
+    @PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SupplierResponseDto> updateSupplier(@RequestBody SupplierRequestUpdateDto supplierRequestDto){
         return ResponseEntity.status(HttpStatus.OK).body( supplierService.updateSupplier(supplierRequestDto));
     }

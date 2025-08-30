@@ -44,13 +44,7 @@ public class SupplierMapper {
         if(supplierRequestUpdateDto.email() != null){
             entity.setEmail(supplierRequestUpdateDto.email());
         }
-        if(supplierRequestUpdateDto.type() != null){
-            try {
-               entity.setType(SupplierType.fromInt(supplierRequestUpdateDto.type()));
-            }catch (Exception e){
-                throw new IllegalArgumentException("Codigo inexistente para tipo de cadastro jurídico");
-            }
-        }
+
         if(supplierRequestUpdateDto.rg() != null){
             entity.setRg(supplierRequestUpdateDto.rg());
         }
@@ -79,13 +73,6 @@ public class SupplierMapper {
         }
         if(supplierRequestDto.email() != null){
             entity.setEmail(supplierRequestDto.email());
-        }
-        if(supplierRequestDto.type() != null){
-            try {
-                entity.setType(SupplierType.fromInt(supplierRequestDto.type()));
-            }catch (Exception e){
-                throw new IllegalArgumentException("Codigo inexistente para tipo de cadastro jurídico");
-            }
         }
         if(supplierRequestDto.rg() != null){
             entity.setRg(supplierRequestDto.rg());

@@ -17,8 +17,8 @@ public record SupplierRequestDto(
          String email,
          @NotBlank
          String cep,
-         @NotNull
-         Integer type,
+        // @NotNull
+        // Integer type,
          String rg,
          LocalDate birthDate,
          Set<Long> enterprises

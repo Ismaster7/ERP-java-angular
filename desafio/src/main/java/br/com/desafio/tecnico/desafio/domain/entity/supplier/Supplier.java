@@ -58,9 +58,16 @@ public class Supplier implements Serializable {
     }
 
     public void addEnterprise(Enterprise enterprise) {
-        enterprises.add(enterprise);
+        this.enterprises.add(enterprise);
         enterprise.getSuppliers().add(this);
     }
+
+    public void removeEnterprise(Enterprise enterprise) {
+        this.enterprises.remove(enterprise);
+        enterprise.getSuppliers().remove(this);
+    }
+
+
 
     public Long getSupplierId() {
         return supplierId;

@@ -9,15 +9,14 @@ import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierRespons
 import br.com.desafio.tecnico.desafio.domain.enums.SupplierType;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Document;
-import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.EnterpriseNotFoundException;
-import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.EnterpriseRuleException;
-import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.InvalidCepException;
-import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.SupplierNotFoundException;
+import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.*;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.EnterpriseRepository;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.SupplierRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,8 +55,10 @@ public class SupplierService {
     }
 
     public SupplierResponseDto saveSupplier(SupplierRequestDto supplierRequestDto){
-        validateCnpj(supplierRequestDto.document());
+        validateDocument(supplierRequestDto.document());
         Supplier supplier = supplierMapper.toEntity(supplierRequestDto);
+        //vamos alterar o tipo de acordo com o que o documento é classificado, podendo lançar exceção caso não classifique com nenhum.
+        supplier.setType(validateLegalDocumentType(supplier));
         validateSupplierCanPersist(supplier);
         if(supplierRequestDto.enterprises() != null) {
             Set<Enterprise> enterprises = StreamSupport
@@ -73,61 +74,68 @@ public class SupplierService {
        return supplierMapper.toDto(supplierRepository.save(supplier));
     }
 
-    public SupplierResponseDto updateSupplier(SupplierRequestUpdateDto newSupplier){
+    @Transactional
+    public SupplierResponseDto updateSupplier(SupplierRequestUpdateDto newSupplier) {
+        newSupplier.enterprises().forEach(enterprise -> System.out.println("Enterprise: " + enterprise.toString()));
         Supplier existingSupplier = supplierRepository.findById(newSupplier.supplierId())
                 .orElseThrow(() -> new SupplierNotFoundException("Supplier não encontrado com id: " + newSupplier.supplierId()));
 
-        // se ele tentar trocar de tipo, então vamos verificar se está adequado as outras regras
-        if((existingSupplier.getBirthDate() == null || existingSupplier.getRg() == null)
-                &&(newSupplier.rg() == null || newSupplier.birthDate() == null)
-                && (newSupplier.type().equals(SupplierType.FISICA.getCod()))){
-            throw new EnterpriseRuleException("Você não pode se tornar fornecedor pessoa física sem cadastrar rg e data de aniversário");
-        }
-
-        Supplier supplier = supplierMapper.toEntityPut(newSupplier);
-        validateSupplierCanPersist(supplier);
-
-        if(newSupplier.enterprises() != null) {
-            Set<Enterprise> enterprises = StreamSupport
-                    .stream(enterpriseRepository.findAllById(newSupplier.enterprises()).spliterator(), false)
-                    .collect(Collectors.toSet());
-            if(supplier.getType() == SupplierType.FISICA
-                    && supplier.getBirthDate().plusYears(18).isAfter(LocalDate.now())) {
-                validateEnterpriseForSuppliers(enterprises, supplier);
-            }
-            supplier.setEnterprises(enterprises);
-        }
-
+        // Atualiza os campos simples
         if (newSupplier.document() != null && !newSupplier.document().isBlank()) {
             existingSupplier.setDocument(new Document(newSupplier.document()));
         }
-
         if (newSupplier.name() != null && !newSupplier.name().isBlank()) {
             existingSupplier.setName(newSupplier.name());
         }
-
         if (newSupplier.email() != null && !newSupplier.email().isBlank()) {
             existingSupplier.setEmail(newSupplier.email());
         }
-
         if (newSupplier.cep() != null && !newSupplier.cep().isBlank()) {
             existingSupplier.setCep(new Cep(newSupplier.cep()));
         }
-
-        if (newSupplier.type() != null) {
-            existingSupplier.setType(SupplierType.values()[newSupplier.type()]);
-        }
-
         if (newSupplier.rg() != null && !newSupplier.rg().isBlank()) {
             existingSupplier.setRg(newSupplier.rg());
         }
-
         if (newSupplier.birthDate() != null) {
             existingSupplier.setBirthDate(newSupplier.birthDate());
         }
 
+        // Regras de tipo
+        existingSupplier.setType(validateLegalDocumentType(existingSupplier));
+        if ((existingSupplier.getBirthDate() == null || existingSupplier.getRg() == null)
+                && (newSupplier.rg() == null || newSupplier.birthDate() == null)
+                && (existingSupplier.getType().equals(SupplierType.FISICA))) {
+            throw new EnterpriseRuleException("Você não pode se tornar fornecedor pessoa física sem cadastrar rg e data de aniversário");
+        }
+        validateSupplierCanPersist(existingSupplier);
+
+        // Atualização da lista de empresas relacionadas
+        if (newSupplier.enterprises() != null) {
+            Set<Enterprise> newEnterprises = StreamSupport
+                    .stream(enterpriseRepository.findAllById(newSupplier.enterprises()).spliterator(), false)
+                    .collect(Collectors.toSet());
+        newEnterprises.forEach(enterprise -> System.out.println("Enterprise: " + enterprise.getEnterpriseId()));
+            // Valida regra de maioridade + estado
+            if (existingSupplier.getType() == SupplierType.FISICA
+                    && existingSupplier.getBirthDate().plusYears(18).isAfter(LocalDate.now())) {
+                validateEnterpriseForSuppliers(newEnterprises, existingSupplier);
+            }
+
+            // Remove empresas antigas
+            for (Enterprise oldEnterprise : new HashSet<>(existingSupplier.getEnterprises())) {
+                existingSupplier.removeEnterprise(oldEnterprise);
+            }
+
+            // Adiciona novas
+            for (Enterprise enterprise : newEnterprises) {
+                existingSupplier.addEnterprise(enterprise);
+            }
+        }
+
         return supplierMapper.toDto(supplierRepository.save(existingSupplier));
     }
+
+
 
     public void validateSupplierCanPersist(Supplier supplier){
         // validação de se o fornecedor é pessoa física tendo rg e data de aniversário na requisição
@@ -144,7 +152,7 @@ public class SupplierService {
 
     }
 
-    public void validateCnpj(String value){
+    public void validateDocument(String value){
         // validação de Documento existente no banco de dados
         var document = new Document(value);
         boolean exists = supplierRepository.existsByDocument(document);
@@ -169,6 +177,16 @@ public class SupplierService {
                 if (cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, enterprise.getCep().getValue()))
                     throw new EnterpriseRuleException();
 
+        }
+    }
+
+    private SupplierType validateLegalDocumentType(Supplier supplier){
+        if(supplier.getDocument().isValidCnpj(supplier.getDocument().getDocument())){
+           return SupplierType.JURIDICA;
+        } else if (supplier.getDocument().isValidCpf(supplier.getDocument().getDocument())) {
+            return SupplierType.FISICA;
+        }else {
+            throw new InvalidDocumentExceptionException("Documento de fornecedor inválido");
         }
     }
 
