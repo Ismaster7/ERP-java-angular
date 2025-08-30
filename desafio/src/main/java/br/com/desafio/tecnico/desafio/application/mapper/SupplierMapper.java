@@ -1,8 +1,10 @@
 package br.com.desafio.tecnico.desafio.application.mapper;
 
+import br.com.desafio.tecnico.desafio.domain.entity.enterprise.Enterprise;
 import br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto.EnterpriseResponseDto;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierRequestDto;
+import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierRequestUpdateDto;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierResponseDto;
 import br.com.desafio.tecnico.desafio.domain.enums.SupplierType;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
@@ -20,6 +22,42 @@ public class SupplierMapper {
 
     public SupplierMapper(EnterpriseMapper enterpriseMapper){
         this.enterpriseMapper = enterpriseMapper;
+    }
+
+    public Supplier toEntityPut(SupplierRequestUpdateDto supplierRequestUpdateDto){
+        if(supplierRequestUpdateDto == null)
+        {
+            throw new IllegalArgumentException("Parâmetros nulos");
+        }
+        var entity = new Supplier();
+
+        if(supplierRequestUpdateDto.cep() != null){
+            entity.setCep(new Cep(supplierRequestUpdateDto.cep()));
+        }
+        if(supplierRequestUpdateDto.document() != null){
+            entity.setDocument(new Document(supplierRequestUpdateDto.document().toString()));
+        }
+
+        if(supplierRequestUpdateDto.name() != null){
+            entity.setName(supplierRequestUpdateDto.name());
+        }
+        if(supplierRequestUpdateDto.email() != null){
+            entity.setEmail(supplierRequestUpdateDto.email());
+        }
+        if(supplierRequestUpdateDto.type() != null){
+            try {
+               entity.setType(SupplierType.fromInt(supplierRequestUpdateDto.type()));
+            }catch (Exception e){
+                throw new IllegalArgumentException("Codigo inexistente para tipo de cadastro jurídico");
+            }
+        }
+        if(supplierRequestUpdateDto.rg() != null){
+            entity.setRg(supplierRequestUpdateDto.rg());
+        }
+        if(supplierRequestUpdateDto.birthDate() != null){
+            entity.setBirthDate(supplierRequestUpdateDto.birthDate());
+        }
+        return entity;
     }
 
     public Supplier toEntity(SupplierRequestDto supplierRequestDto){
@@ -63,6 +101,7 @@ public class SupplierMapper {
             return null;
         }
 
+
         // Converte as Enterprises associadas
         Set<EnterpriseResponseDto> enterprises = enterpriseMapper.toDtoWList(supplier.getEnterprises());
 
@@ -77,6 +116,15 @@ public class SupplierMapper {
                 supplier.getBirthDate() != null ? supplier.getBirthDate() : null, // data de nascimento
                 enterprises // lista de enterprises associadas
         );
+    }
+    public Set<SupplierResponseDto> toDto(Set<Supplier> suppliers) {
+        if (suppliers == null || suppliers.isEmpty()) {
+            return Set.of();
+        }
+
+        return suppliers.stream()
+                .map(this::toDto)
+                .collect(Collectors.toSet());
     }
 
     public SupplierResponseDto toDtoWithoutList(Supplier supplier) {

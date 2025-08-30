@@ -4,25 +4,18 @@ import br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto.EnterpriseReq
 import br.com.desafio.tecnico.desafio.domain.entity.enterprise.Enterprise;
 import br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto.EnterpriseRequestUpdateDto;
 import br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto.EnterpriseResponseDto;
-import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierResponseDto;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cnpj;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class EnterpriseMapper {
 
-    private final SupplierMapper supplierMapper;
-
-    public EnterpriseMapper(SupplierMapper supplierMapper){
-        this.supplierMapper = supplierMapper;
-    }
 
     public Enterprise toEntity(EnterpriseRequestCreateDto enterpriseRequestCreateDto){
         if(enterpriseRequestCreateDto == null)
@@ -71,7 +64,23 @@ public class EnterpriseMapper {
             return null;
         }
 
-        Set<SupplierResponseDto> suppliers =  supplierMapper.toDtoWList(enterprise.getSuppliers());
+        // Mapeamento manual de suppliers
+        Set<SupplierResponseDto> suppliers = null;
+        if (enterprise.getSuppliers() != null) {
+            suppliers = enterprise.getSuppliers().stream()
+                    .map(supplier -> new SupplierResponseDto(
+                            supplier.getSupplierId(),
+                            supplier.getDocument() != null ? supplier.getDocument().getDocument() : null,
+                            supplier.getName() != null ? supplier.getName() : null,
+                            supplier.getEmail() != null ? supplier.getEmail() : null,
+                            supplier.getCep() != null ? supplier.getCep().getValue() : null,
+                            supplier.getType().getCod(),
+                            supplier.getRg(),
+                            supplier.getBirthDate(),
+                            new HashSet<>()
+                    ))
+                    .collect(Collectors.toSet());
+        }
 
         return new EnterpriseResponseDto(
                 enterprise.getEnterpriseId(),

@@ -1,6 +1,6 @@
 package br.com.desafio.tecnico.desafio.domain.valueObject;
 
-import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.InvalidDocumentException;
+import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.InvalidDocumentExceptionException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
@@ -17,7 +17,7 @@ public class Cnpj extends DocumentBase{
         if(isValid()){
             this.document = document.replaceAll("\\D", "");
         }else{
-            throw new InvalidDocumentException("CNPJ inválido!");
+            throw new InvalidDocumentExceptionException("CNPJ inválido!");
             /* criei este validador no construtor para lógicas de negócio interno.
             para validação da chegada da requisição, usei o @Validation do Spring mesmo.
              */

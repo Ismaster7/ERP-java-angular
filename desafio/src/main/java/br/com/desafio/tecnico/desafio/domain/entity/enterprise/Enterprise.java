@@ -3,8 +3,7 @@ package br.com.desafio.tecnico.desafio.domain.entity.enterprise;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cnpj;
-import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.InvalidDocumentException;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.InvalidDocumentExceptionException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -39,13 +38,22 @@ public class Enterprise implements Serializable {
 
     public Enterprise(Cnpj cnpj, String tradeName, Cep cep) {
         if (!cnpj.isValid()) {
-            throw new InvalidDocumentException("CNPJ inválido");
+            throw new InvalidDocumentExceptionException("CNPJ inválido");
         }
         this.cnpj = cnpj;
         this.tradeName = tradeName;
         this.cep = cep;
     }
 
+    public void addSupplier(Supplier supplier) {
+        this.suppliers.add(supplier);          // atualiza o lado inverso
+        supplier.getEnterprises().add(this);   // atualiza o lado dono
+    }
+
+    public void removeSupplier(Supplier supplier) {
+        this.suppliers.remove(supplier);       // remove do lado inverso
+        supplier.getEnterprises().remove(this); // remove do lado dono
+    }
 
 
     public Long getEnterpriseId() {

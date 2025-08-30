@@ -8,7 +8,8 @@ import br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto.EnterpriseRes
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import br.com.desafio.tecnico.desafio.domain.enums.SupplierType;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cnpj;
-import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.EnterpriseNotFound;
+import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.EnterpriseNotFoundException;
+import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.EnterpriseRuleException;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.EnterpriseRepository;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.SupplierRepository;
 import br.com.desafio.tecnico.desafio.presentation.serializer.view.JsonViews;
@@ -17,7 +18,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -50,85 +50,88 @@ public class EnterpriseService {
     public EnterpriseResponseDto getEnterpriseById(Long id) {
         return enterpriseMapper.toDto(
                 enterpriseRepository.findById(id)
-                        .orElseThrow(EnterpriseNotFound::new)
+                        .orElseThrow(EnterpriseNotFoundException::new)
         );
     }
 
     @Transactional
     public EnterpriseResponseDto saveEnterprise(EnterpriseRequestCreateDto enterpriseRequestCreateDto) {
         validateExistsDocument(enterpriseRequestCreateDto.cnpj());
-        var state = cepService.consultCep(enterpriseRequestCreateDto.cep());
-        validateExistsCep(state.cep());
-        Enterprise enterprise = enterpriseMapper.toEntity(enterpriseRequestCreateDto);
 
-        if (enterpriseRequestCreateDto.suppliers() != null) { // se a lista tiver algo, vamos validar os fornecedores
-            // criamos a lista de fornecedores
+        Enterprise enterprise = enterpriseMapper.toEntity(enterpriseRequestCreateDto);
+        var state = cepService.consultCep(enterpriseRequestCreateDto.cep());
+
+
+        if (enterpriseRequestCreateDto.suppliers() != null && !enterpriseRequestCreateDto.suppliers().isEmpty()) {
             Set<Supplier> suppliers = StreamSupport
                     .stream(supplierRepository.findAllById(enterpriseRequestCreateDto.suppliers()).spliterator(), false)
-                    .collect(Collectors.toSet());/* se o cep for do parana, chamaremos a função validateSuppliersForEnterprise, para verificar se algum dos
-             fornecedores é divergente em nossas verificações */
+                    .collect(Collectors.toSet());
+
             boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state.cep());
             if(result){
                 validateAndFetchSuppliersForEnterprise(suppliers, state.cep());
             }
-            // se tudo ocorrer bem, passamos nossa lista de fornecedores para a empresa.
-            enterprise.setSuppliers(suppliers);
+
+            for (Supplier supplier : suppliers) {
+                supplier.getEnterprises().add(enterprise); // atualiza lado dono
+            }
+            enterprise.setSuppliers(suppliers); // atualiza lado inverso
         }
 
-        return enterpriseMapper.toDto(enterpriseRepository.save(enterprise));
+        Enterprise saved = enterpriseRepository.save(enterprise);
+        return enterpriseMapper.toDto(saved);
     }
 
     @Transactional
     public EnterpriseResponseDto updateEnterprise(EnterpriseRequestUpdateDto enterpriseRequestUpdateDto) {
-        // Validações
+        // busca a empresa antiga
         var oldEnterprise = enterpriseRepository.findById(enterpriseRequestUpdateDto.enterpriseId())
-                .orElseThrow(EnterpriseNotFound::new);
+                .orElseThrow(EnterpriseNotFoundException::new);
+
+        // Consulta e valida CEP
         var state = cepService.consultCep(enterpriseRequestUpdateDto.cep());
-        validateExistsCep(state.cep());
+
+
+        // Converte request para entidade temporária
         var newEnterprise = enterpriseMapper.toEntity(enterpriseRequestUpdateDto);
-        if (enterpriseRequestUpdateDto.suppliers() != null) { // se a lista tiver algo, vamos validar os fornecedores
-            // criamos a lista de fornecedores
-            Set<Supplier> suppliers = StreamSupport
-                    .stream(supplierRepository.findAllById(enterpriseRequestUpdateDto.suppliers()).spliterator(), false)
-                    .collect(Collectors.toSet());/* se o cep for do parana, chamaremos a função validateSuppliersForEnterprise, para verificar se algum dos
-             fornecedores é divergente em nossas verificações */
-            boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state.cep());
-            if(result){
-                validateAndFetchSuppliersForEnterprise(suppliers, state.cep());
-            }
-            // se tudo ocorrer bem, passamos nossa lista de fornecedores para a empresa.
-            newEnterprise.setSuppliers(suppliers);
-        }
 
-        // atualização
-
+        // Atualiza CEP, tradeName e CNPJ
         if (newEnterprise.getCep() != null && !newEnterprise.getCep().equals(oldEnterprise.getCep())) {
             oldEnterprise.setCep(newEnterprise.getCep());
         }
-
         if (newEnterprise.getTradeName() != null && !newEnterprise.getTradeName().equals(oldEnterprise.getTradeName())) {
             oldEnterprise.setTradeName(newEnterprise.getTradeName());
         }
-
         if (newEnterprise.getCnpj() != null && !newEnterprise.getCnpj().equals(oldEnterprise.getCnpj())) {
             oldEnterprise.setCnpj(newEnterprise.getCnpj());
         }
 
-        if (newEnterprise.getSuppliers() != null && !newEnterprise.getSuppliers().equals(oldEnterprise.getSuppliers())) {
-            oldEnterprise.setSuppliers(newEnterprise.getSuppliers());
+        if (enterpriseRequestUpdateDto.suppliers() != null) {
+
+            Set<Supplier> newSuppliers = StreamSupport
+                    .stream(supplierRepository.findAllById(enterpriseRequestUpdateDto.suppliers()).spliterator(), false)
+                    .collect(Collectors.toSet());
+
+            boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state.cep());
+            if (result) {
+                validateAndFetchSuppliersForEnterprise(newSuppliers, state.cep());
+            }
+
+            oldEnterprise.getSuppliers().stream()
+                    .filter(s -> !newSuppliers.contains(s))
+                    .forEach(oldEnterprise::removeSupplier);
+
+            // Adiciona novos fornecedores
+            newSuppliers.stream()
+                    .filter(s -> !oldEnterprise.getSuppliers().contains(s))
+                    .forEach(oldEnterprise::addSupplier);
         }
 
         return enterpriseMapper.toDto(enterpriseRepository.save(oldEnterprise));
     }
 
-    @Transactional
-    public void removeEnterprise(Long id) {
-        enterpriseRepository.deleteById(id);
-    }
 
-    /**
-     * Regras de negócio de vinculação de fornecedor
-     */
+
     public void validateAndFetchSuppliersForEnterprise(Set<Supplier> suppliers, String state) {
             LocalDate actualDate = LocalDate.now();
             for (Supplier supplier : suppliers) {
@@ -136,9 +139,7 @@ public class EnterpriseService {
                         supplier.getBirthDate() != null &&
                         supplier.getBirthDate().plusYears(18).isAfter(actualDate)) {
 
-                    throw new IllegalArgumentException(
-                            "Não é permitido cadastrar fornecedor pessoa física menor de idade para empresas do Paraná"
-                    );
+                    throw new EnterpriseRuleException();
                 }
             }
 
@@ -153,14 +154,11 @@ public class EnterpriseService {
         }
     }
 
-    public void validateExistsCep(String state){
-        if(state == null){
-            throw new RuntimeException("Este Cep não corresponde a nenhum lugar válido");
-        }
-    }
 
     public void deleteEnterprise(Long id) {
-        enterpriseRepository.findById(id).orElseThrow(EnterpriseNotFound::new);
+        if(!enterpriseRepository.existsById(id)){
+            throw new EnterpriseNotFoundException();
+        }
         enterpriseRepository.deleteById(id);
     }
 }

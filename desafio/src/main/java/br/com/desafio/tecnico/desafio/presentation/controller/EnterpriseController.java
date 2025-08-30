@@ -43,9 +43,9 @@ public class EnterpriseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> deleteEnterprise(@PathVariable(name = "id") Long id){
+    public ResponseEntity<Void> deleteEnterprise(@PathVariable(name = "id") Long id){
         enterpriseService.deleteEnterprise(id);
-        return ResponseEntity.status(HttpStatus.OK).body(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
