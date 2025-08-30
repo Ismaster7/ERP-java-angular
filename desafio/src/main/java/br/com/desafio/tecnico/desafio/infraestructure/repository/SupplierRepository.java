@@ -1,6 +1,7 @@
 package br.com.desafio.tecnico.desafio.infraestructure.repository;
 
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
+import br.com.desafio.tecnico.desafio.domain.valueObject.Document;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +15,5 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     @Query(nativeQuery = true, value = "SELECT * FROM supplier f WHERE (:name IS NULL OR LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
             "AND (:document IS NULL OR f.document = :document) ")
     List<Supplier> findByNameAndDocument(@Param("name") String name);
+    boolean existsByDocument(Document document);
 }

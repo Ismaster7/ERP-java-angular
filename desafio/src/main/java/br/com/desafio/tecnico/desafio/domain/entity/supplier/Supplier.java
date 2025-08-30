@@ -24,10 +24,11 @@ public class Supplier implements Serializable {
     @Column(name = "supplier_id")
     private Long supplierId;
     // CPF ou CNPJ
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private Document document;
     private String name;
     private String email;
+    @Embedded
     private Cep cep;
     @Enumerated(EnumType.ORDINAL)
     private SupplierType type;
@@ -42,7 +43,8 @@ public class Supplier implements Serializable {
     )
     @JsonIgnoreProperties("suppliers")
     private Set<Enterprise> enterprises = new HashSet<>();
-
+    public Supplier(){
+    }
     public Supplier(Document document, String name, String email, Cep cep, String rg, LocalDate birthDate) {
         if (document.isCpf() && (rg == null || birthDate == null)) {
             throw new IllegalArgumentException("Pessoa física precisa de RG e Data de Nascimento");

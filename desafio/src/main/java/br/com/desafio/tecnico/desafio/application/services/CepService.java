@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Set;
+
 @Service
 public class CepService {
 
@@ -27,10 +29,11 @@ public class CepService {
         }
     }
 
-    public boolean isCepFromSpecificStates(String[] states, String enterpriseCep) {
+    public boolean isCepFromSpecificStates(Set<String> states, String enterpriseCep) {
         var enterpriseLocation = consultCep(enterpriseCep);
         for (String state : states) {
-            if (enterpriseLocation.uf().equalsIgnoreCase(state) || enterpriseLocation.estado().equalsIgnoreCase(state) ) {
+            if (enterpriseLocation.uf().equalsIgnoreCase(state) ||
+                    enterpriseLocation.estado().equalsIgnoreCase(state) ) {
                 return true;
             }
         }

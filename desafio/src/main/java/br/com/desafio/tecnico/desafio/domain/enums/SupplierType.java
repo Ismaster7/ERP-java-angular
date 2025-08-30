@@ -1,8 +1,8 @@
 package br.com.desafio.tecnico.desafio.domain.enums;
 
 public enum SupplierType {
-    FISICA(1),
-    JURIDICA(2);
+    FISICA(0),
+    JURIDICA(1);
 
     private final int cod;
 

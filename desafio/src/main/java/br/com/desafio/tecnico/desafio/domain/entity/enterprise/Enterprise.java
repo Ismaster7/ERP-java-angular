@@ -3,6 +3,7 @@ package br.com.desafio.tecnico.desafio.domain.entity.enterprise;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cep;
 import br.com.desafio.tecnico.desafio.domain.valueObject.Cnpj;
+import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.InvalidDocumentException;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -38,19 +39,13 @@ public class Enterprise implements Serializable {
 
     public Enterprise(Cnpj cnpj, String tradeName, Cep cep) {
         if (!cnpj.isValid()) {
-            throw new IllegalArgumentException("CNPJ inválido");
-            /* criei este validador no construtor para lógicas de negócio interno.
-            para validação da chegada da requisição, usei o @Validation do Spring mesmo.
-             */
+            throw new InvalidDocumentException("CNPJ inválido");
         }
         this.cnpj = cnpj;
         this.tradeName = tradeName;
         this.cep = cep;
     }
-    public void addSupplier(Supplier supplier) {
-        suppliers.add(supplier);
-        supplier.getEnterprises().add(this);
-    }
+
 
 
     public Long getEnterpriseId() {
@@ -94,14 +89,14 @@ public class Enterprise implements Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object == null || getClass() != object.getClass()) return false;
-        Enterprise that = (Enterprise) object;
-        return Objects.equals(cnpj, that.cnpj) && Objects.equals(cep, that.cep);
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Enterprise that = (Enterprise) o;
+        return Objects.equals(enterpriseId, that.enterpriseId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cnpj, cep);
+        return Objects.hashCode(enterpriseId);
     }
 }

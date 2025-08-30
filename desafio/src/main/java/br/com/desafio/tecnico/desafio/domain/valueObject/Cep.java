@@ -1,5 +1,6 @@
 package br.com.desafio.tecnico.desafio.domain.valueObject;
 
+import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.InvalidDocumentException;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
@@ -10,13 +11,14 @@ public class Cep {
     protected Cep() {}
 
     public Cep(String cepValue) {
+        this.cepValue = cepValue;
         if (!isValidCep(cepValue)) {
-            throw new IllegalArgumentException("Cep Inválido");
+            throw new InvalidDocumentException("Cep Inválido");
             /* criei este validador no construtor para lógicas de negócio interno.
             para validação da chegada da requisição, usei o @Validation do Spring mesmo.
              */
         }
-        this.cepValue = cepValue;
+
     }
 
     public static Cep of(String cepValue) {
@@ -28,6 +30,6 @@ public class Cep {
     }
 
     private boolean isValidCep(String cep) {
-        return cep != null && cep.matches("\\d{5}-?\\d{3}");
+        return cep != null && cep.trim().matches("\\d{5}-?\\d{3}");
     }
 }

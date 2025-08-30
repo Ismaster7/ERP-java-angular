@@ -1,17 +1,20 @@
-package br.com.desafio.tecnico.desafio.domain.entity.enterprise;
+package br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto;
 
-import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
 
-public record EnterpriseRequestDto(
-
+public record EnterpriseRequestUpdateDto(
+        @NotNull
         Long enterpriseId,
         @NotBlank
         String cnpj,
         String tradeName,
+        @NotBlank
         String cep,
         Set<Long> suppliers
 ) {
+
+
 }
