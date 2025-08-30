@@ -161,7 +161,7 @@ public class EnterpriseService {
         }
     }
 
-
+    @Transactional
     public void deleteEnterprise(Long id) {
         if(!enterpriseRepository.existsById(id)){
             throw new EnterpriseNotFoundException();

@@ -53,7 +53,7 @@ public class SupplierService {
 
         return supplierMapper.toDto(suppliers);
     }
-
+    @Transactional
     public SupplierResponseDto saveSupplier(SupplierRequestDto supplierRequestDto){
         validateDocument(supplierRequestDto.document());
         Supplier supplier = supplierMapper.toEntity(supplierRequestDto);
@@ -189,7 +189,7 @@ public class SupplierService {
             throw new InvalidDocumentExceptionException("Documento de fornecedor inválido");
         }
     }
-
+    @Transactional
     public void deleteById(Long id) {
         if(!supplierRepository.existsById(id)){
             throw new SupplierNotFoundException();
