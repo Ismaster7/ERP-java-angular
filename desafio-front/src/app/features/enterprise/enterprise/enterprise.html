@@ -1,0 +1,50 @@
+<section class="enterprise-section">
+  <!-- Botões de Ações -->
+  <div class="buttons">
+    <app-action-button label="Adicionar Empresa"></app-action-button>
+    <app-action-button label="Filtrar" (click)="toggleFilter()"></app-action-button>
+
+    @if(showFilter) {
+      <div @portalAnimation class="filter-container">
+        <input type="text" placeholder="Nome Fantasia" >
+        <input type="text" placeholder="CNPJ" >
+        <app-action-button label="Aplicar Filtros" ></app-action-button>
+      </div>
+    }
+  </div>
+
+  <!-- Lista de Empresas -->
+  <div class="enterprise-list">
+    <div class="enterprise-header">
+      <div class="col name">Nome Fantasia</div>
+      <div class="col cnpj">CNPJ</div>
+      <div class="col cep">CEP</div>
+      <div class="col state">Estado</div>
+      <div class="col actions">Ações</div>
+    </div>
+
+    @for (enterprise of enterprises; track enterprise.enterpriseId) {
+      <div class="enterprise-card">
+        <div class="col name">{{ enterprise.tradeName }}</div>
+        <div class="col cnpj">{{ enterprise.cnpj }}</div>
+        <div class="col cep">{{ enterprise.cep }}</div>
+        <div class="col state">{{ enterprise.state }}</div>
+        <div class="col actions">
+          <button class="delete-btn" (click)="openDeleteConfirm(enterprise.enterpriseId, enterprise.tradeName)">
+            🗑️
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Modal de Confirmação - FORA da section principal -->
+@if(showConfirmModal) {
+  <app-confirm-modal
+    title="Confirmar Exclusão"
+    [message]="deleteMessage"
+    (confirm)="confirmDelete()"
+    (cancel)="cancelDelete()">
+  </app-confirm-modal>
+}

@@ -2,12 +2,14 @@
 @use "../../../../styles/mixin" as mixin;
 
 .main-content {
-  @include mixin.background-blue;
+ // @include mixin.background-blue;
   grid-column: 2; // segunda coluna
   grid-row: 1;    // mesma linha da sidebar
   color: variables.$primary-color;
-  padding: 1rem;
+  padding: 10px;
   height: 100vh;
+  background: url('../../../../../public/images/background.jpg') no-repeat center center fixed;
+  background-size: cover;
 }
 
 

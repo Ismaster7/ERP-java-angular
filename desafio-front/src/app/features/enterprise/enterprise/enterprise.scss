@@ -1,0 +1,168 @@
+@use "../../../../styles/variables.scss" as variables;
+
+.enterprise-section{
+  width: 90%;
+  height: 90vh;
+  margin: auto;
+  backdrop-filter: blur(20px);
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+
+.enterprise-list {
+  background-color: variables.$color-dark-blue;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.enterprise-header {
+  background-color: darken(variables.$color-dark-blue, 5%);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .col {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.enterprise-card {
+  background-color: lighten(variables.$color-dark-blue, 5%);
+  color: #f0f4f8;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  .col {
+    flex: 1;
+    text-align: center;
+
+    &.actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+  }
+}
+
+
+.buttons{
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+  min-height: 100px;
+}
+.filter-container{
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  padding: 10px;
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease-in-out;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.enterprise-section {
+
+  .buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    .filter-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+
+      input {
+        padding: 0.5rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+    }
+  }
+
+  .enterprise-list {
+    display: flex;
+    flex-direction: column;
+
+    .enterprise-header,
+    .enterprise-card {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr 1fr 1fr;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .enterprise-header {
+      font-weight: bold;
+    }
+
+    .enterprise-card {
+      &:hover {
+        background-color: variables.$color-gray-dark;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+
+        .delete-btn {
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          font-size: 1.2rem;
+          color: #ff4d4f;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+      }
+    }
+  }
+}
+// Estilos para o modal de confirmação
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.enterprise-section {
+  position: relative;
+}
+
+

@@ -8,10 +8,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './main-content.scss'
 })
 export class MainContent {
-contador = signal(2);
 
-addContador(){
-  this.contador.update(contador => contador *2);
-}
 
 }
