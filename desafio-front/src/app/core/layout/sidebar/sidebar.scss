@@ -1,0 +1,34 @@
+@use '../../../../styles/mixin';
+@use '../../../../styles/variables';
+
+.sidebar {
+  flex: 0 0 250px;
+  height: 100vh;
+  background-color: variables.$color-dark-blue;
+  color: variables.$primary-color;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  img{
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    .selector-button {
+      @include mixin.big-font;
+      color: variables.$primary-color;
+    }
+  }
+}
+
