@@ -1,13 +1,20 @@
 package br.com.desafio.tecnico.desafio.infraestructure.exception;
 
 import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.*;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -72,5 +79,61 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(template, BAD_REQUEST);
     }
+    // Exceções vindas do validation
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleValidationExceptions(ConstraintViolationException ex) {
+        List<String> errorMessages = new ArrayList<>();
+
+        // Extrai os erros de validação
+        ex.getConstraintViolations().forEach(violation -> {
+            String errorMessage = violation.getPropertyPath() + " " + violation.getMessage();
+            errorMessages.add(errorMessage);
+        });
+
+        return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        List<String> errorMessages = new ArrayList<>();
+
+        for (FieldError error : fieldErrors) {
+            String errorMessage = String.format("Campo '%s' %s", error.getField(), error.getDefaultMessage());
+            errorMessages.add(errorMessage);
+        }
+
+        return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateFieldException.class)
+    public ResponseEntity<ExceptionTemplate> handleDuplicateField(DuplicateFieldException e, WebRequest request){
+        var template = new ExceptionTemplate(
+                e.getMessage(),
+                request.getDescription(false),
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        );
+        return new ResponseEntity<>(template, HttpStatus.CONFLICT); // 409 Conflict
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ExceptionTemplate> handleDataIntegrityViolation(DataIntegrityViolationException e, WebRequest request) {
+        String message = "";
+
+        if (e.getMostSpecificCause().getMessage().contains("trade_name")) {
+            message = "Já existe uma empresa com esse nome fantasia.";
+        } else if (e.getMostSpecificCause().getMessage().contains("cnpj")) {
+            message = "Já existe uma empresa com esse CNPJ.";
+        }
+
+        var template = new ExceptionTemplate(
+                message,
+                request.getDescription(false),
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        );
+        return new ResponseEntity<>(template, HttpStatus.CONFLICT);
+    }
+
 
 }

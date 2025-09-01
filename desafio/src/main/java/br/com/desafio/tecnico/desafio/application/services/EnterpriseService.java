@@ -12,13 +12,16 @@ import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.Enter
 import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.EnterpriseRuleException;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.EnterpriseRepository;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.SupplierRepository;
+import br.com.desafio.tecnico.desafio.infraestructure.repository.specifications.EnterpriseSpecifications;
 import br.com.desafio.tecnico.desafio.presentation.serializer.view.JsonViews;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -57,18 +60,18 @@ public class EnterpriseService {
 
     @Transactional
     public EnterpriseResponseDto saveEnterprise(EnterpriseRequestCreateDto enterpriseRequestCreateDto) {
-        validateExistsDocument(enterpriseRequestCreateDto.cnpj());
+
+        validateExistsDocument(enterpriseRequestCreateDto.cnpj(), enterpriseRequestCreateDto.tradeName());
 
         Enterprise enterprise = enterpriseMapper.toEntity(enterpriseRequestCreateDto);
         var state = cepService.consultCep(enterpriseRequestCreateDto.cep());
-
-
+        enterprise.setState(state.estado());
         if (enterpriseRequestCreateDto.suppliers() != null && !enterpriseRequestCreateDto.suppliers().isEmpty()) {
             Set<Supplier> suppliers = StreamSupport
                     .stream(supplierRepository.findAllById(enterpriseRequestCreateDto.suppliers()).spliterator(), false)
                     .collect(Collectors.toSet());
 
-            boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state.cep());
+            boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, enterprise.getState());
             if(result){
                 validateAndFetchSuppliersForEnterprise(suppliers);
             }
@@ -85,19 +88,24 @@ public class EnterpriseService {
 
     @Transactional
     public EnterpriseResponseDto updateEnterprise(EnterpriseRequestUpdateDto enterpriseRequestUpdateDto) {
-        // busca a empresa existente
         var oldEnterprise = enterpriseRepository.findById(enterpriseRequestUpdateDto.enterpriseId())
                 .orElseThrow(EnterpriseNotFoundException::new);
 
+
         // consulta e valida o CEP
-        var state = cepService.consultCep(enterpriseRequestUpdateDto.cep());
+        String state = "";
+        if(enterpriseRequestUpdateDto.cep() != null){
+            state = cepService.consultCep(enterpriseRequestUpdateDto.cep()).estado();
+        }
 
         // converte request em entidade temporária
         var newEnterprise = enterpriseMapper.toEntity(enterpriseRequestUpdateDto);
 
         // atualiza campos básicos
         if (newEnterprise.getCep() != null && !newEnterprise.getCep().equals(oldEnterprise.getCep())) {
+            if(state.isEmpty()) throw new RuntimeException("Houve um problema com a requisição de cep");
             oldEnterprise.setCep(newEnterprise.getCep());
+            oldEnterprise.setState(state);
         }
         if (newEnterprise.getTradeName() != null && !newEnterprise.getTradeName().equals(oldEnterprise.getTradeName())) {
             oldEnterprise.setTradeName(newEnterprise.getTradeName());
@@ -113,7 +121,7 @@ public class EnterpriseService {
                     .collect(Collectors.toSet());
 
             // valida se precisa aplicar regras de CEP proibido
-            boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state.cep());
+            boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state);
             if (result) {
                 validateAndFetchSuppliersForEnterprise(newSuppliers);
             }
@@ -153,19 +161,38 @@ public class EnterpriseService {
 
     }
 
-    public void validateExistsDocument(String cnpjStr){
+    public void validateExistsDocument(String cnpjStr, String tradeName){
         var cnpj = new Cnpj(cnpjStr);
         boolean exists = enterpriseRepository.existsByCnpj(cnpj);
         if (exists) {
-            throw new IllegalArgumentException("Enterprise with this CNPJ already exists");
+            throw new IllegalArgumentException("CNPJ já cadastrado!");
         }
+        boolean exists2 = enterpriseRepository.existsByTradeName(tradeName);
+        if (exists2) {
+            throw new IllegalArgumentException("Nome Fantasia já cadastrado!");
+        }
+
     }
 
     @Transactional
     public void deleteEnterprise(Long id) {
         if(!enterpriseRepository.existsById(id)){
             throw new EnterpriseNotFoundException();
+
         }
-        enterpriseRepository.deleteById(id);
+        Enterprise enterprise = enterpriseRepository.findById(id)
+                .orElseThrow(EnterpriseNotFoundException::new);
+        enterprise.clearSuppliers(); // Limpa todas as relações
+        enterpriseRepository.delete(enterprise);
     }
+
+    public Set<EnterpriseResponseDto> searchEnterprises(String tradeName, String cnpj) {
+        Specification<Enterprise> spec = Specification.where(EnterpriseSpecifications.tradeNameLike(tradeName))
+                .and(EnterpriseSpecifications.cnpjLike(cnpj));
+
+        return enterpriseMapper.toDto(new HashSet<>(enterpriseRepository.findAll(spec)));
+
+    }
+
+
 }

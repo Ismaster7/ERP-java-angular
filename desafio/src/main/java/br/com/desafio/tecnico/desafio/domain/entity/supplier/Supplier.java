@@ -26,6 +26,7 @@ public class Supplier implements Serializable {
     // CPF ou CNPJ
     @Column(unique = true, nullable = false)
     private Document document;
+    @Column(nullable = false)
     private String name;
     private String email;
     @Embedded

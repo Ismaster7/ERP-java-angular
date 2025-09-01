@@ -24,11 +24,11 @@ public class Enterprise implements Serializable {
     @Embedded
     private Cnpj cnpj;
 
-    @Column(name = "trade_name", unique = true)
+    @Column(name = "trade_name", unique = true, nullable = false)
     private String tradeName;
     @Embedded
     private Cep cep;
-
+    private String state;
     @ManyToMany(mappedBy = "enterprises")
     @JsonIgnoreProperties("enterprises")
     private Set<Supplier> suppliers = new HashSet<>();
@@ -36,13 +36,14 @@ public class Enterprise implements Serializable {
     public Enterprise() {
     }
 
-    public Enterprise(Cnpj cnpj, String tradeName, Cep cep) {
+    public Enterprise(Cnpj cnpj, String tradeName, Cep cep, String state) {
         if (!cnpj.isValid()) {
             throw new InvalidDocumentExceptionException("CNPJ inválido");
         }
         this.cnpj = cnpj;
         this.tradeName = tradeName;
         this.cep = cep;
+        this.state = state;
     }
 
     public void addSupplier(Supplier supplier) {
@@ -54,8 +55,11 @@ public class Enterprise implements Serializable {
         this.suppliers.remove(supplier);
         supplier.getEnterprises().remove(this);
     }
-
-
+    public void clearSuppliers() {
+        for (Supplier supplier : new HashSet<>(this.suppliers)) {
+            this.removeSupplier(supplier);
+        }
+    }
     public Long getEnterpriseId() {
         return enterpriseId;
     }
@@ -94,6 +98,14 @@ public class Enterprise implements Serializable {
 
     public void setSuppliers(Set<Supplier> suppliers) {
         this.suppliers = suppliers;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     @Override

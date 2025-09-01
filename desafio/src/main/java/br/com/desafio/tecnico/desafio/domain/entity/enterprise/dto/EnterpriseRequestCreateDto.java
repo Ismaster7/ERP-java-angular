@@ -9,6 +9,7 @@ public record EnterpriseRequestCreateDto(
         Long enterpriseId,
         @NotBlank
         String cnpj,
+        @NotBlank
         String tradeName,
         @NotBlank
         String cep,

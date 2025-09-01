@@ -1,11 +1,12 @@
 package br.com.desafio.tecnico.desafio.domain.valueObject;
 
 import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.InvalidDocumentExceptionException;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Cep {
-
+    @Column(nullable = false)
     private String cepValue;
 
     protected Cep() {}

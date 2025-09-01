@@ -23,7 +23,6 @@ public class CepService {
     public CepResponse consultCep(String cep) {
         String url = apiUrl.replace("{cep}", cep);
         try {
-            // RestTemplate já faz o mapeamento para o DTO CepResponse
             var result = restTemplate.getForObject(url, CepResponse.class);
             if(result.cep() == null){
                 throw new InvalidCepException();
@@ -34,11 +33,10 @@ public class CepService {
         }
     }
 
-    public boolean isCepFromSpecificStates(Set<String> states, String enterpriseCep) {
-        var enterpriseLocation = consultCep(enterpriseCep);
+    public boolean isCepFromSpecificStates(Set<String> states, String stateEnterprise) {
+       // var enterpriseLocation = consultCep(enterpriseCep);
         for (String state : states) {
-            if (enterpriseLocation.uf().equalsIgnoreCase(state) ||
-                    enterpriseLocation.estado().equalsIgnoreCase(state) ) {
+            if (stateEnterprise.equalsIgnoreCase(state) ) {
                 return true;
             }
         }

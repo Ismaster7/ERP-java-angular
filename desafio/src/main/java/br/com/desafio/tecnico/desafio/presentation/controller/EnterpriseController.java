@@ -25,13 +25,13 @@ public class EnterpriseController implements EnterpriseControllerInterface {
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<Set<EnterpriseResponseDto>>getAllEnterprises(){
-        return ResponseEntity.status(HttpStatus.FOUND).body(enterpriseService.getAllEnterprise());
+        return ResponseEntity.status(HttpStatus.OK).body(enterpriseService.getAllEnterprise());
     }
 
 
     @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<EnterpriseResponseDto> getEnterprise(@PathVariable(name="id") Long id){
-        return ResponseEntity.status(HttpStatus.FOUND).body(enterpriseService.getEnterpriseById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(enterpriseService.getEnterpriseById(id));
     }
 
 
@@ -41,9 +41,10 @@ public class EnterpriseController implements EnterpriseControllerInterface {
         return ResponseEntity.status(HttpStatus.CREATED).body( enterpriseService.saveEnterprise(enterprise));
     }
 
-    @PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+    @PutMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<EnterpriseResponseDto> updateEnterprise(@RequestBody @Valid EnterpriseRequestUpdateDto enterprise){
+
         return ResponseEntity.status(HttpStatus.OK).body( enterpriseService.updateEnterprise(enterprise));
     }
 
@@ -51,6 +52,14 @@ public class EnterpriseController implements EnterpriseControllerInterface {
     public ResponseEntity<Void> deleteEnterprise(@PathVariable(name = "id") Long id){
         enterpriseService.deleteEnterprise(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Set<EnterpriseResponseDto>> searchEnterprises(
+            @RequestParam(required = false) String tradeName,
+            @RequestParam(required = false) String cnpj) {
+
+        return ResponseEntity.ok(enterpriseService.searchEnterprises(tradeName, cnpj));
     }
 
 }

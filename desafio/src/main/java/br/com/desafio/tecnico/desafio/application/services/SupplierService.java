@@ -12,7 +12,9 @@ import br.com.desafio.tecnico.desafio.domain.valueObject.Document;
 import br.com.desafio.tecnico.desafio.infraestructure.exception.exceptions.*;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.EnterpriseRepository;
 import br.com.desafio.tecnico.desafio.infraestructure.repository.SupplierRepository;
+import br.com.desafio.tecnico.desafio.infraestructure.repository.specifications.SupplierSpecifications;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +23,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static br.com.desafio.tecnico.desafio.infraestructure.repository.specifications.SupplierSpecifications.documentLike;
+import static br.com.desafio.tecnico.desafio.infraestructure.repository.specifications.SupplierSpecifications.nameLike;
 
 @Service
 public class SupplierService {
@@ -76,7 +81,6 @@ public class SupplierService {
 
     @Transactional
     public SupplierResponseDto updateSupplier(SupplierRequestUpdateDto newSupplier) {
-        newSupplier.enterprises().forEach(enterprise -> System.out.println("Enterprise: " + enterprise.toString()));
         Supplier existingSupplier = supplierRepository.findById(newSupplier.supplierId())
                 .orElseThrow(() -> new SupplierNotFoundException("Supplier não encontrado com id: " + newSupplier.supplierId()));
 
@@ -152,6 +156,14 @@ public class SupplierService {
 
     }
 
+    public Set<SupplierResponseDto> searchSuppliers(String name, String document) {
+        Specification<Supplier> spec = Specification.where(nameLike(name))
+                .and(documentLike(document));
+
+
+        return supplierMapper.toDto(new HashSet<>(supplierRepository.findAll(spec)));
+    }
+
     public void validateDocument(String value){
         // validação de Documento existente no banco de dados
         var document = new Document(value);
@@ -169,12 +181,11 @@ public class SupplierService {
 
     public void validateEnterpriseForSuppliers(Set<Enterprise> enterprises, Supplier supplier) {
 
-        /*  Infelizmente teremos de realizar uam requisição para cada enterprise, verificando se são do Paraná,
-           PORÉM só faremos isso se o fornecedor for menor de 18 anos.
+        /*  Criamos o atributo state para justamente não precisarmos consultar a função consultCep (função que
+         dispara a requisição a api de CEP) para cada validação, economizando recursos.
         */
-
             for (Enterprise enterprise : enterprises) {
-                if (cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, enterprise.getCep().getValue()))
+                if (cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, enterprise.getState()))
                     throw new EnterpriseRuleException();
 
         }

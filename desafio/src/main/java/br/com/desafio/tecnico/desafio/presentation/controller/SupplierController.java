@@ -5,6 +5,7 @@ import br.com.desafio.tecnico.desafio.domain.entity.supplier.Supplier;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierRequestDto;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierRequestUpdateDto;
 import br.com.desafio.tecnico.desafio.domain.entity.supplier.dto.SupplierResponseDto;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,24 +25,24 @@ public class SupplierController {
     @GetMapping(value = "/{id}", produces = {
         MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SupplierResponseDto> getSupplier(@PathVariable(name="id") Long id){
-        return ResponseEntity.status(HttpStatus.FOUND).body(supplierService.getEnterpriseById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(supplierService.getEnterpriseById(id));
     }
 
     @GetMapping(produces = {
             MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<Set<SupplierResponseDto>> getAllSuppliers(){
-        return ResponseEntity.status(HttpStatus.FOUND).body(supplierService.getAllSuppliers());
+        return ResponseEntity.status(HttpStatus.OK).body(supplierService.getAllSuppliers());
     }
 
     @PostMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public ResponseEntity<SupplierResponseDto> saveSupplier(@RequestBody SupplierRequestDto supplierRequestDto){
+    public ResponseEntity<SupplierResponseDto> saveSupplier(@RequestBody @Valid  SupplierRequestDto supplierRequestDto){
         return ResponseEntity.status(HttpStatus.CREATED).body( supplierService.saveSupplier(supplierRequestDto));
     }
 
     @PutMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-    public ResponseEntity<SupplierResponseDto> updateSupplier(@RequestBody SupplierRequestUpdateDto supplierRequestDto){
+    public ResponseEntity<SupplierResponseDto> updateSupplier(@RequestBody @Valid SupplierRequestUpdateDto supplierRequestDto){
         return ResponseEntity.status(HttpStatus.OK).body( supplierService.updateSupplier(supplierRequestDto));
     }
 
@@ -50,5 +51,14 @@ public class SupplierController {
         supplierService.deleteById(id);
         return ResponseEntity.status((HttpStatus.NO_CONTENT)).build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Set<SupplierResponseDto>> searchSuppliers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String document) {
+
+        return ResponseEntity.ok(supplierService.searchSuppliers(name, document));
+    }
+
 
 }

@@ -8,10 +8,8 @@ import java.util.Set;
 public record EnterpriseRequestUpdateDto(
         @NotNull
         Long enterpriseId,
-        @NotBlank
         String cnpj,
         String tradeName,
-        @NotBlank
         String cep,
         Set<Long> suppliers
 ) {

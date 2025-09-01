@@ -86,6 +86,7 @@ public class EnterpriseMapper {
                 enterprise.getEnterpriseId(),
                 enterprise.getCnpj() != null ? enterprise.getCnpj().getDocument() : null,
                 enterprise.getTradeName() != null ? enterprise.getTradeName() : null,
+                enterprise.getState() != null ? enterprise.getState() : null,
                 enterprise.getCep() != null ? String.valueOf(enterprise.getCep().getValue()) : null,
                 suppliers
         );
@@ -118,6 +119,7 @@ public class EnterpriseMapper {
                 enterprise.getEnterpriseId(),
                 enterprise.getCnpj() != null ? enterprise.getCnpj().getDocument() : null,
                 enterprise.getTradeName()!= null ? enterprise.getTradeName() : null,
+                enterprise.getState() != null ? enterprise.getState() : null,
                 enterprise.getCep() != null ? String.valueOf(enterprise.getCep().getValue()) : null,
                 new HashSet<>()
         );

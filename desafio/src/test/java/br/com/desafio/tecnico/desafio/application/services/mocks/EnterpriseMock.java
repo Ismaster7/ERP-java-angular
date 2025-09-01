@@ -51,6 +51,7 @@ public class EnterpriseMock {
                 10L,
                 "123456780001",
                 "Empresa Teste",
+                "Sao Paulo",
                 "0207110",
                 new HashSet<>()
         );

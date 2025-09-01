@@ -14,6 +14,8 @@ public record EnterpriseResponseDto(
         @JsonView(JsonViews.Default.class)
         String tradeName,
         @JsonView(JsonViews.Default.class)
+        String state,
+        @JsonView(JsonViews.Default.class)
         String cep,
         @JsonView(JsonViews.SupplierWithEnterprises.class)
         Set<SupplierResponseDto> suppliers
