@@ -27,21 +27,21 @@ services:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       - mysql
+    ports:
+      - "8999:8086"
     networks:
       - app-network
-    ports:
-      - "8999:8086"  # expõe o backend para teste no host
+
   frontend:
     build: ./frontend
     container_name: frontend
     restart: always
-    networks:
-      - app-network
     ports:
-      - "4999:80"  # host:container
+      - "4999:80"
     depends_on:
       - backend
-
+    networks:
+      - app-network
 
 networks:
   app-network:

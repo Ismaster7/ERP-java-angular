@@ -84,7 +84,6 @@ export class EnterpriseComponent implements OnInit {
         this.enterprises = data;
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error fetching enterprises:', error);
       }
     });
   }
