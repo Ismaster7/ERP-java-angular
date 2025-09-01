@@ -310,7 +310,6 @@
   }
 }
 
-/* Container para empresas associadas */
 .enterprise-tags-container {
   margin-top: 1rem;
   padding: 1rem;
@@ -326,7 +325,6 @@
   }
 }
 
-/* Mensagem quando não há empresas */
 .no-enterprises {
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
@@ -334,7 +332,6 @@
   text-align: center;
 }
 
-// No supplier-form.scss
 .type-display {
   padding: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -343,7 +340,6 @@
   color: #fff;
   font-size: 1rem;
 }
-// No supplier-form.scss
 
 .enterprise-selector {
   select.duplicate-warning {
@@ -363,8 +359,6 @@
   padding: 0.5rem;
   text-align: center;
 }
-// Mantenha os outros estilos do enterprise-form
-// Adicionar ao supplier-form.scss
 
 .invalid {
   border-color: #ff4d4f !important;

@@ -9,7 +9,7 @@ import { HttpParams } from '@angular/common/http';
   providedIn: 'root'
 })
 export class EnterpriseService {
-  private apiUrl = "http://localhost:8086/api/enterprise/v1";
+  private apiUrl = "http://localhost:8999/api/enterprise/v1";
 
   constructor(private http: HttpClient) {}
 

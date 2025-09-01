@@ -53,13 +53,10 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('EnterpriseFormComponent - ngOnChanges acionado:', changes);
 
     if (changes['enterprise'] && changes['enterprise'].currentValue) {
       const currentEnterprise = changes['enterprise'].currentValue as EnterpriseModel;
 
-      console.log('Enterprise atual:', currentEnterprise);
-      console.log('Suppliers atual:', currentEnterprise.suppliers);
 
       this.formEnterprise = { ...currentEnterprise };
       this.updateSupplierObjectsFromInput();
@@ -67,15 +64,12 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
   }
 
   private updateSupplierObjectsFromInput() {
-    console.log('Suppliers recebidos do backend:', this.enterprise.suppliers);
 
     if (this.enterprise.suppliers && this.enterprise.suppliers.length > 0) {
       // CORREÇÃO: Usar diretamente os objetos que vieram do backend
       this.supplierObjects = this.enterprise.suppliers as unknown as SupplierModel[];
-      console.log('SupplierObjects atualizados:', this.supplierObjects);
     } else {
       this.supplierObjects = [];
-      console.log('Nenhum supplier recebido do backend');
     }
   }
 
@@ -84,10 +78,8 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
     this.supplierService.getSuppliers().subscribe({
       next: (data) => {
         this.suppliers = data;
-        console.log('Todos os fornecedores carregados para dropdown:', this.suppliers);
       },
       error: (err) => {
-        console.error('Erro ao carregar fornecedores', err);
         this.notificationService.error('Erro', 'Não foi possível carregar a lista de fornecedores');
       }
     });
@@ -135,7 +127,6 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
       return;
     }
 
-    // Validação: Paraná não pode ter fornecedores menores de idade
     if (this.isParanaState()) {
       const invalidSuppliers = this.supplierObjects.filter(supplier =>
         this.isSupplierUnderagePhysicalPerson(supplier)
@@ -151,14 +142,13 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
       }
     }
 
-    // CORREÇÃO: Preparar para enviar apenas IDs para o backend
     const enterpriseToSend: EnterpriseModel = {
       enterpriseId: this.formEnterprise.enterpriseId,
       tradeName: this.formEnterprise.tradeName,
       cnpj: this.formEnterprise.cnpj,
       cep: this.formEnterprise.cep,
       state: this.formEnterprise.state,
-      suppliers: this.supplierObjects.map(s => s.supplierId) // Envia apenas IDs
+      suppliers: this.supplierObjects.map(s => s.supplierId)
     };
 
     console.log('Enviando para o backend:', enterpriseToSend);
@@ -193,11 +183,9 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
       return;
     }
 
-    // Adiciona à lista de exibição
     this.supplierObjects.push(supplier);
     this.selectedSupplierId = null;
 
-    // Notificação para menores de idade
     if (this.isSupplierUnderagePhysicalPerson(supplier)) {
       this.notificationService.warning(
         'Fornecedor Menor de Idade',
@@ -225,26 +213,21 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
     return age;
   }
 
-  // CORREÇÃO: Nova função para validar Pessoa Física menor de idade
 isSupplierUnderagePhysicalPerson(supplier: SupplierModel): boolean {
   const type = supplier.type ?? 0;
   const birthday = supplier.birthdayDate;
 
-  // Verifica se o tipo é Pessoa Física e se a data de nascimento é válida
   if (type === 0 && typeof birthday === 'string') {
     return this.getAge(birthday) < 18; // Verifica se a idade é menor que 18
   }
 
-  // Retorna falso caso não seja Pessoa Física ou a data de nascimento não seja uma string válida
   return false;
 }
 
-  // Função mantida para compatibilidade
   isSupplierMinor(supplier: SupplierModel): boolean {
     return this.isSupplierUnderagePhysicalPerson(supplier);
   }
 
-  // CORREÇÃO: Texto simplificado para "Física" e "Jurídica"
   getSupplierTypeText(type: number): string {
     return type === 0 ? 'Física' : 'Jurídica';
   }

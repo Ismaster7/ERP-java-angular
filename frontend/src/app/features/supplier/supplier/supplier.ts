@@ -82,11 +82,8 @@ export class SupplierComponent implements OnInit {
     this.supplierService.getSuppliers().subscribe({
       next: (data: SupplierModel[]) => {
         this.suppliers = data;
-        console.log('Suppliers carregados:', this.suppliers);
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error fetching suppliers:', error);
-        this.notificationService.error('Erro', 'Não foi possível carregar os fornecedores');
       }
     });
   }

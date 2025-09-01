@@ -11,7 +11,7 @@ import { HttpParams } from '@angular/common/http';
 })
 export class SupplierServiceTs {
   constructor(private http: HttpClient) {}
-  private apiUrl = 'http://localhost:8086/api/supplier/v1';
+  private apiUrl = 'http://localhost:8999/api/supplier/v1';
 
   getSuppliers(): Observable<SupplierModel[]> {
       return this.http.get<SupplierModel[]>(`${this.apiUrl}`);

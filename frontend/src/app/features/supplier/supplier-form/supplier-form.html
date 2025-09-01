@@ -5,7 +5,6 @@
   </div>
 
   <form (ngSubmit)="onSubmit()" class="supplier-form">
-    <!-- Documento -->
     <div class="form-group">
       <label for="document">Documento (CPF/CNPJ) *</label>
       <input
@@ -22,7 +21,6 @@
       </small>
     </div>
 
-    <!-- Nome -->
     <div class="form-group">
       <label for="name">Nome *</label>
       <input
@@ -34,7 +32,6 @@
         placeholder="Digite o nome completo ou razão social">
     </div>
 
-    <!-- Email -->
     <div class="form-group">
       <label for="email">Email</label>
       <input
@@ -45,7 +42,6 @@
         placeholder="Digite o email">
     </div>
 
-    <!-- CEP -->
     <div class="form-group">
       <label for="cep">CEP *</label>
       <div class="cep-container">
@@ -72,7 +68,6 @@
       </small>
     </div>
 
-    <!-- Tipo (apenas exibição) -->
     <div class="form-group">
       <label>Tipo</label>
       <div class="type-display" [class.physical]="isPhysicalPerson" [class.legal]="!isPhysicalPerson">
@@ -80,7 +75,6 @@
       </div>
     </div>
 
-    <!-- RG (apenas para PF) -->
     <div class="form-group" *ngIf="isPhysicalPerson">
       <label for="rg">RG *</label>
       <input
@@ -92,7 +86,6 @@
         placeholder="Digite o RG">
     </div>
 
-    <!-- Data de Nascimento (apenas para PF) -->
     <div class="form-group" *ngIf="isPhysicalPerson">
       <label for="birthDate">Data de Nascimento *</label>
       <input
@@ -107,7 +100,6 @@
       </small>
     </div>
 
-    <!-- Empresas Associadas -->
     <div class="form-group">
       <label for="enterprises">Empresas Associadas</label>
 

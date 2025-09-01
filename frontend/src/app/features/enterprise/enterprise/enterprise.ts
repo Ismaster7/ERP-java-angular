@@ -65,7 +65,6 @@ export class EnterpriseComponent implements OnInit {
   enterpriseToDelete: number | null = null;
   deleteMessage: string = '';
 
-  // Variáveis para filtros
   tradeNameFilter: string = '';
   cnpjFilter: string = '';
 
@@ -86,7 +85,6 @@ export class EnterpriseComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error fetching enterprises:', error);
-        this.notificationService.error('Erro', 'Não foi possível carregar as empresas');
       }
     });
   }
@@ -145,7 +143,6 @@ export class EnterpriseComponent implements OnInit {
 
   toggleFilter() {
     this.showFilter = !this.showFilter;
-    // Se estiver fechando o filtro, limpar os campos e recarregar a lista completa
     if (!this.showFilter) {
       this.clearFilters();
     }

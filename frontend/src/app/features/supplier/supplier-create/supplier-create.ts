@@ -34,17 +34,14 @@ export class SupplierCreate {
   ) {}
 
   onSubmit(supplierData: any) {
-    // Determinar se é pessoa física com base no documento
     const cleanDocument = supplierData.document.replace(/\D/g, '');
     const isPhysicalPerson = cleanDocument.length === 11;
 
-    // Criar objeto para envio com campos condicionais
     const supplierForCreate: SupplierCreateModel = {
       document: supplierData.document,
       name: supplierData.name,
       email: supplierData.email || undefined,
       cep: supplierData.cep,
-      // Incluir RG e data de nascimento apenas para pessoa física
       rg: isPhysicalPerson ? supplierData.rg : undefined,
       birthDate: isPhysicalPerson ? supplierData.birthdayDate : undefined,
       enterprises: supplierData.enterprises || []

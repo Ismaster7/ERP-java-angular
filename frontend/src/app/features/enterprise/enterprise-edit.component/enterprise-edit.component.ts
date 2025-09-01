@@ -40,9 +40,7 @@ export class EnterpriseEditComponent implements OnInit {
   loadEnterprise(id: number) {
     this.enterpriseService.getEnterpriseById(id).subscribe({
       next: (data) => {
-        console.log('Dados completos da empresa recebidos:', data);
 
-        // CORREÇÃO CRÍTICA: Criar um NOVO objeto para forçar a detecção de mudanças
         this.enterprise = {
           enterpriseId: data.enterpriseId,
           tradeName: data.tradeName,
@@ -52,11 +50,8 @@ export class EnterpriseEditComponent implements OnInit {
           suppliers: Array.isArray(data.suppliers) ? [...data.suppliers] : [] // Clone do array
         };
 
-        console.log('Enterprise após carga:', this.enterprise);
-        console.log('Fornecedores da empresa:', this.enterprise.suppliers);
       },
       error: (error) => {
-        console.error('Error loading enterprise:', error);
         this.notificationService.error('Erro', 'Não foi possível carregar os dados da empresa');
       }
     });
@@ -72,7 +67,6 @@ export class EnterpriseEditComponent implements OnInit {
       suppliers: enterpriseData.suppliers || []
     };
 
-    console.log('Enviando para atualização:', enterpriseToUpdate);
 
     this.enterpriseService.updateEnterprise(enterpriseToUpdate).subscribe({
       next: () => {
@@ -80,7 +74,6 @@ export class EnterpriseEditComponent implements OnInit {
         this.router.navigate(['/enterprise']);
       },
       error: (error) => {
-        console.error('Error updating enterprise:', error);
         if (error.status === 400 && error.error?.exeption?.includes('CNPJ')) {
           this.notificationService.error('Erro', 'CNPJ já cadastrado em outra empresa');
         } else {

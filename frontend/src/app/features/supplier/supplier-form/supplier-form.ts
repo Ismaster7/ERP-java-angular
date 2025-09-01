@@ -124,28 +124,23 @@ export class SupplierFormComponent implements OnInit, OnChanges {
   }
 
   onSubmit() {
-    // Prevenir múltiplos envios
     if (this.isSubmitting) return;
     this.isSubmitting = true;
 
-    // Garantir que o tipo esteja correto
     this.determineSupplierType();
 
-    // Validar documento (CPF/CNPJ)
     if (!this.isValidDocument()) {
       this.notificationService.error('Erro', 'Documento deve ter 11 dígitos (CPF) ou 14 dígitos (CNPJ)');
       this.isSubmitting = false;
       return;
     }
 
-    // Validar CEP
     if (!this.isValidCep()) {
       this.notificationService.error('Erro', 'CEP deve ter 8 dígitos');
       this.isSubmitting = false;
       return;
     }
 
-    // Validar campos obrigatórios para pessoa física
     if (this.isPhysicalPerson) {
       if (!this.formSupplier.rg || this.formSupplier.rg.trim() === '') {
         this.notificationService.error('Erro', 'RG é obrigatório para Pessoa Física');
@@ -159,7 +154,6 @@ export class SupplierFormComponent implements OnInit, OnChanges {
         return;
       }
 
-      // Validar se a data de nascimento é válida (não é futura)
       const birthDate = new Date(this.formSupplier.birthdayDate);
       const today = new Date();
       if (birthDate > today) {
@@ -169,12 +163,10 @@ export class SupplierFormComponent implements OnInit, OnChanges {
       }
     }
 
-    // Preparar para enviar apenas IDs das empresas
     const enterpriseIds = this.enterpriseObjects.map(e =>
       typeof e === 'object' ? e.enterpriseId : e
     );
 
-    // Garantir que campos opcionais sejam undefined se vazios
     const supplierToSend = {
       document: this.formSupplier.document,
       name: this.formSupplier.name,
@@ -188,7 +180,6 @@ export class SupplierFormComponent implements OnInit, OnChanges {
     console.log('Enviando dados:', supplierToSend);
     this.submitForm.emit(supplierToSend);
 
-    // Resetar o estado de submissão após um tempo (caso o emit não finalize o processo)
     setTimeout(() => {
       this.isSubmitting = false;
     }, 2000);
@@ -229,7 +220,6 @@ export class SupplierFormComponent implements OnInit, OnChanges {
       return;
     }
 
-    // Verificar se a empresa já foi adicionada
     const enterpriseAlreadyAdded = this.enterpriseObjects.some(e =>
       (typeof e === 'object' ? e.enterpriseId : e) === enterprise.enterpriseId
     );
@@ -240,7 +230,6 @@ export class SupplierFormComponent implements OnInit, OnChanges {
       return;
     }
 
-    // Adicionar a empresa
     this.enterpriseObjects.push(enterprise);
     this.selectedEnterpriseId = null;
 
