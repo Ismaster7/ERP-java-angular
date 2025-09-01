@@ -62,7 +62,6 @@ public class SupplierService {
     public SupplierResponseDto saveSupplier(SupplierRequestDto supplierRequestDto){
         validateDocument(supplierRequestDto.document());
         Supplier supplier = supplierMapper.toEntity(supplierRequestDto);
-        //vamos alterar o tipo de acordo com o que o documento é classificado, podendo lançar exceção caso não classifique com nenhum.
         supplier.setType(validateLegalDocumentType(supplier));
         validateSupplierCanPersist(supplier);
         if(supplierRequestDto.enterprises() != null) {
@@ -84,7 +83,6 @@ public class SupplierService {
         Supplier existingSupplier = supplierRepository.findById(newSupplier.supplierId())
                 .orElseThrow(() -> new SupplierNotFoundException("Supplier não encontrado com id: " + newSupplier.supplierId()));
 
-        // Atualiza os campos simples
         if (newSupplier.document() != null && !newSupplier.document().isBlank()) {
             existingSupplier.setDocument(new Document(newSupplier.document()));
         }
@@ -104,7 +102,6 @@ public class SupplierService {
             existingSupplier.setBirthDate(newSupplier.birthDate());
         }
 
-        // Regras de tipo
         existingSupplier.setType(validateLegalDocumentType(existingSupplier));
         if ((existingSupplier.getBirthDate() == null || existingSupplier.getRg() == null)
                 && (newSupplier.rg() == null || newSupplier.birthDate() == null)
@@ -113,24 +110,20 @@ public class SupplierService {
         }
         validateSupplierCanPersist(existingSupplier);
 
-        // Atualização da lista de empresas relacionadas
         if (newSupplier.enterprises() != null) {
             Set<Enterprise> newEnterprises = StreamSupport
                     .stream(enterpriseRepository.findAllById(newSupplier.enterprises()).spliterator(), false)
                     .collect(Collectors.toSet());
         newEnterprises.forEach(enterprise -> System.out.println("Enterprise: " + enterprise.getEnterpriseId()));
-            // Valida regra de maioridade + estado
             if (existingSupplier.getType() == SupplierType.FISICA
                     && existingSupplier.getBirthDate().plusYears(18).isAfter(LocalDate.now())) {
                 validateEnterpriseForSuppliers(newEnterprises, existingSupplier);
             }
 
-            // Remove empresas antigas
             for (Enterprise oldEnterprise : new HashSet<>(existingSupplier.getEnterprises())) {
                 existingSupplier.removeEnterprise(oldEnterprise);
             }
 
-            // Adiciona novas
             for (Enterprise enterprise : newEnterprises) {
                 existingSupplier.addEnterprise(enterprise);
             }
@@ -142,13 +135,11 @@ public class SupplierService {
 
 
     public void validateSupplierCanPersist(Supplier supplier){
-        // validação de se o fornecedor é pessoa física tendo rg e data de aniversário na requisição
         if(supplier.getType().equals(SupplierType.FISICA)
                 && (supplier.getRg() == null || supplier.getBirthDate() == null)){
             throw new IllegalArgumentException("Fornecedor pessoa física também precisa cadastrar rg e data de nascimento");
         }
 
-        // validação do cep do fornecedor
         var state = cepService.consultCep(supplier.getCep().getValue());
         if(state == null){
             throw new InvalidCepException();
@@ -165,7 +156,6 @@ public class SupplierService {
     }
 
     public void validateDocument(String value){
-        // validação de Documento existente no banco de dados
         var document = new Document(value);
         boolean exists = supplierRepository.existsByDocument(document);
         if (exists) {
@@ -181,9 +171,6 @@ public class SupplierService {
 
     public void validateEnterpriseForSuppliers(Set<Enterprise> enterprises, Supplier supplier) {
 
-        /*  Criamos o atributo state para justamente não precisarmos consultar a função consultCep (função que
-         dispara a requisição a api de CEP) para cada validação, economizando recursos.
-        */
             for (Enterprise enterprise : enterprises) {
                 if (cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, enterprise.getState()))
                     throw new EnterpriseRuleException();

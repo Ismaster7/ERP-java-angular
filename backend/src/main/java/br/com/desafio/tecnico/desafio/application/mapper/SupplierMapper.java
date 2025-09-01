@@ -89,7 +89,6 @@ public class SupplierMapper {
         }
 
 
-        // Converte as Enterprises associadas
         Set<EnterpriseResponseDto> enterprises = enterpriseMapper.toDtoWList(supplier.getEnterprises());
 
         return new SupplierResponseDto(

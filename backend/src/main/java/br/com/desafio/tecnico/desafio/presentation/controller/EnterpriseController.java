@@ -2,11 +2,9 @@ package br.com.desafio.tecnico.desafio.presentation.controller;
 
 import br.com.desafio.tecnico.desafio.application.services.EnterpriseService;
 import br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto.EnterpriseRequestCreateDto;
-import br.com.desafio.tecnico.desafio.domain.entity.enterprise.Enterprise;
 import br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto.EnterpriseRequestUpdateDto;
 import br.com.desafio.tecnico.desafio.domain.entity.enterprise.dto.EnterpriseResponseDto;
 import br.com.desafio.tecnico.desafio.presentation.controller.docs.EnterpriseControllerInterface;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

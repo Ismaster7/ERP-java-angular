@@ -18,9 +18,7 @@ public class Cnpj extends DocumentBase{
             this.document = document.replaceAll("\\D", "");
         }else{
             throw new InvalidDocumentExceptionException("CNPJ inválido!");
-            /* criei este validador no construtor para lógicas de negócio interno.
-            para validação da chegada da requisição, usei o @Validation do Spring mesmo.
-             */
+
         }
 
     }

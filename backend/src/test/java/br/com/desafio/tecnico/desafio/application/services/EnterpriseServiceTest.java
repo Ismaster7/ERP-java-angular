@@ -86,32 +86,25 @@ class EnterpriseServiceTest {
 
     @Test
     void shouldThrowEnterpriseRuleExceptionWhenSupplierUnderageAndCEPProhibited() {
-        // Usando os mocks
         EnterpriseRequestCreateDto dto = EnterpriseMock.createRequestDto();
         Enterprise enterprise = EnterpriseMock.createEnterpriseEntity();
         List<Supplier> suppliers = EnterpriseMock.createSuppliers();
 
-        // Ajustando para que um supplier seja menor de 18 anos
         Supplier underageSupplier = suppliers.get(0);
         underageSupplier.setBirthDate(LocalDate.now().minusYears(15));
         underageSupplier.setDocument(new Document("12345678901"));
         underageSupplier.setCep(new Cep("80000-000"));
 
-        // Mock do mapper
         when(enterpriseMapper.toEntity(dto)).thenReturn(enterprise);
 
-        // Mock do CEP Service
         when(cepService.consultCep(dto.cep()))
                 .thenReturn(new CepResponse(dto.cep(), "Rua Teste", "PR"));
         when(cepService.isCepFromSpecificStates(anySet(), anyString())).thenReturn(true);
 
-        // Mock do SupplierRepository para retornar o supplier menor de idade
         when(supplierRepository.findAllById(eq(dto.suppliers()))).thenReturn(suppliers);
 
-        // Executa e verifica a exceção
         assertThrows(EnterpriseRuleException.class, () -> enterpriseService.saveEnterprise(dto));
 
-        // Verifica que a empresa não foi salva
         verify(enterpriseRepository, never()).save(any());
     }
 

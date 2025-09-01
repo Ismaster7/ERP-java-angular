@@ -15,9 +15,7 @@ public class Cep {
         this.cepValue = cepValue;
         if (!isValidCep(cepValue)) {
             throw new InvalidDocumentExceptionException("Cep Inválido");
-            /* criei este validador no construtor para lógicas de negócio interno.
-            para validação da chegada da requisição, usei o @Validation do Spring mesmo.
-             */
+
         }
 
     }

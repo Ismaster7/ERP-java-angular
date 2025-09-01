@@ -20,11 +20,7 @@ import java.util.Set;
 @RequestMapping("api/enterprise/v1")
 public interface EnterpriseControllerInterface {
 
-    /**
-     * Retorna todos os registros de Enterprise.
-     *
-     * @return ResponseEntity contendo um Set de EnterpriseResponseDto
-     */
+
     @Operation(
             summary = "Find all enterprises",
             tags = {"Enterprise"},
@@ -51,12 +47,7 @@ public interface EnterpriseControllerInterface {
     )
     ResponseEntity<Set<EnterpriseResponseDto>> getAllEnterprises();
 
-    /**
-     * Retorna uma Enterprise pelo seu ID.
-     *
-     * @param id ID da Enterprise
-     * @return ResponseEntity contendo o EnterpriseResponseDto correspondente
-     */
+
     @Operation(
             summary = "Find enterprise by ID",
             tags = {"Enterprise"},
@@ -74,12 +65,7 @@ public interface EnterpriseControllerInterface {
     )
     ResponseEntity<EnterpriseResponseDto> getEnterprise(@PathVariable(name = "id") Long id);
 
-    /**
-     * Cria uma nova Enterprise.
-     *
-     * @param enterprise DTO contendo informações da nova Enterprise
-     * @return ResponseEntity com o EnterpriseResponseDto criado
-     */
+
     @Operation(
             summary = "Create new enterprise",
             tags = {"Enterprise"},
@@ -97,12 +83,6 @@ public interface EnterpriseControllerInterface {
     @PostMapping
     ResponseEntity<EnterpriseResponseDto> createNewEnterprise(@RequestBody @Valid EnterpriseRequestCreateDto enterprise);
 
-    /**
-     * Atualiza uma Enterprise existente.
-     *
-     * @param enterprise DTO contendo informações atualizadas da Enterprise
-     * @return ResponseEntity com o EnterpriseResponseDto atualizado
-     */
     @Operation(
             summary = "Update enterprise",
             tags = {"Enterprise"},
@@ -121,12 +101,7 @@ public interface EnterpriseControllerInterface {
     @PutMapping
     ResponseEntity<EnterpriseResponseDto> updateEnterprise(@RequestBody @Valid EnterpriseRequestUpdateDto enterprise);
 
-    /**
-     * Remove uma Enterprise pelo seu ID.
-     *
-     * @param id ID da Enterprise
-     * @return ResponseEntity sem conteúdo
-     */
+
     @Operation(
             summary = "Delete enterprise by ID",
             tags = {"Enterprise"},

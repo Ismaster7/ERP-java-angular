@@ -92,16 +92,13 @@ public class EnterpriseService {
                 .orElseThrow(EnterpriseNotFoundException::new);
 
 
-        // consulta e valida o CEP
         String state = "";
         if(enterpriseRequestUpdateDto.cep() != null){
             state = cepService.consultCep(enterpriseRequestUpdateDto.cep()).estado();
         }
 
-        // converte request em entidade temporária
         var newEnterprise = enterpriseMapper.toEntity(enterpriseRequestUpdateDto);
 
-        // atualiza campos básicos
         if (newEnterprise.getCep() != null && !newEnterprise.getCep().equals(oldEnterprise.getCep())) {
             if(state.isEmpty()) throw new RuntimeException("Houve um problema com a requisição de cep");
             oldEnterprise.setCep(newEnterprise.getCep());
@@ -114,26 +111,22 @@ public class EnterpriseService {
             oldEnterprise.setCnpj(newEnterprise.getCnpj());
         }
 
-        // atualização da lista de suppliers
         if (enterpriseRequestUpdateDto.suppliers() != null) {
             Set<Supplier> newSuppliers = StreamSupport
                     .stream(supplierRepository.findAllById(enterpriseRequestUpdateDto.suppliers()).spliterator(), false)
                     .collect(Collectors.toSet());
 
-            // valida se precisa aplicar regras de CEP proibido
             boolean result = cepService.isCepFromSpecificStates(prohibitedStatesForUnderageSuppliers, state);
             if (result) {
                 validateAndFetchSuppliersForEnterprise(newSuppliers);
             }
 
-            // remove fornecedores antigos que não estão mais na nova lista
             Set<Supplier> suppliersToRemove = new HashSet<>(oldEnterprise.getSuppliers());
             suppliersToRemove.removeAll(newSuppliers);
             for (Supplier supplier : suppliersToRemove) {
                 oldEnterprise.removeSupplier(supplier);
             }
 
-            // adiciona os novos fornecedores que não estavam antes
             Set<Supplier> suppliersToAdd = new HashSet<>(newSuppliers);
             suppliersToAdd.removeAll(oldEnterprise.getSuppliers());
             for (Supplier supplier : suppliersToAdd) {
