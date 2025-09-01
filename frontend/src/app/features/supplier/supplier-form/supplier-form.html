@@ -1,0 +1,163 @@
+<div class="form-container">
+  <div class="form-header">
+    <h2>{{ title }}</h2>
+    <button type="button" class="back-btn" (click)="onCancel()">← Voltar</button>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="supplier-form">
+    <!-- Documento -->
+    <div class="form-group">
+      <label for="document">Documento (CPF/CNPJ) *</label>
+      <input
+        type="text"
+        id="document"
+        [(ngModel)]="formSupplier.document"
+        name="document"
+        required
+        (input)="onDocumentChange()"
+        placeholder="Digite CPF (11 dígitos) ou CNPJ (14 dígitos)"
+        [class.invalid]="formSupplier.document && !isValidDocument()">
+      <small *ngIf="formSupplier.document && !isValidDocument()" class="error-text">
+        Documento deve ter 11 (CPF) ou 14 (CNPJ) dígitos
+      </small>
+    </div>
+
+    <!-- Nome -->
+    <div class="form-group">
+      <label for="name">Nome *</label>
+      <input
+        type="text"
+        id="name"
+        [(ngModel)]="formSupplier.name"
+        name="name"
+        required
+        placeholder="Digite o nome completo ou razão social">
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="formSupplier.email"
+        name="email"
+        placeholder="Digite o email">
+    </div>
+
+    <!-- CEP -->
+    <div class="form-group">
+      <label for="cep">CEP *</label>
+      <div class="cep-container">
+        <input
+          type="text"
+          id="cep"
+          [(ngModel)]="formSupplier.cep"
+          name="cep"
+          required
+          (input)="onCepInput($event)"
+          placeholder="00000-000"
+          maxlength="9"
+          [class.invalid]="formSupplier.cep && !isValidCep()">
+        <button
+          type="button"
+          class="btn-consultar"
+          (click)="consultarCep()"
+          [disabled]="isLoadingCep || !formSupplier.cep || !isValidCep()">
+          {{ isLoadingCep ? 'Consultando...' : 'Consultar' }}
+        </button>
+      </div>
+      <small *ngIf="formSupplier.cep && !isValidCep()" class="error-text">
+        CEP deve ter 8 dígitos
+      </small>
+    </div>
+
+    <!-- Tipo (apenas exibição) -->
+    <div class="form-group">
+      <label>Tipo</label>
+      <div class="type-display" [class.physical]="isPhysicalPerson" [class.legal]="!isPhysicalPerson">
+        {{ getSupplierTypeText() }}
+      </div>
+    </div>
+
+    <!-- RG (apenas para PF) -->
+    <div class="form-group" *ngIf="isPhysicalPerson">
+      <label for="rg">RG *</label>
+      <input
+        type="text"
+        id="rg"
+        [(ngModel)]="formSupplier.rg"
+        name="rg"
+        required
+        placeholder="Digite o RG">
+    </div>
+
+    <!-- Data de Nascimento (apenas para PF) -->
+    <div class="form-group" *ngIf="isPhysicalPerson">
+      <label for="birthDate">Data de Nascimento *</label>
+      <input
+        type="date"
+        id="birthDate"
+        [(ngModel)]="formSupplier.birthdayDate"
+        name="birthDate"
+        required
+        [max]="maxBirthDate()">
+      <small *ngIf="formSupplier.birthdayDate && isFutureDate(formSupplier.birthdayDate)" class="error-text">
+        Data de nascimento não pode ser futura
+      </small>
+    </div>
+
+    <!-- Empresas Associadas -->
+    <div class="form-group">
+      <label for="enterprises">Empresas Associadas</label>
+
+      <div class="enterprise-selector">
+        <select
+          [(ngModel)]="selectedEnterpriseId"
+          name="enterprises"
+          id="enterprises"
+          [class.duplicate]="isEnterpriseAlreadySelected()">
+          <option [ngValue]="null">-- Selecione uma empresa --</option>
+          <option
+            *ngFor="let enterprise of enterprises"
+            [ngValue]="enterprise.enterpriseId"
+            [disabled]="isEnterpriseAlreadyAdded(enterprise.enterpriseId)">
+            {{ enterprise.tradeName }} ({{ enterprise.cnpj }})
+            <span *ngIf="isEnterpriseAlreadyAdded(enterprise.enterpriseId)"> - Já adicionada</span>
+          </option>
+        </select>
+        <button
+          type="button"
+          class="btn-add"
+          (click)="addEnterprise()"
+          [disabled]="!selectedEnterpriseId || isEnterpriseAlreadySelected()">
+          Adicionar
+        </button>
+      </div>
+
+      <div class="enterprise-tags">
+        <span *ngFor="let enterprise of enterpriseObjects" class="tag">
+          {{ getEnterpriseName(enterprise) }}
+          <button
+            type="button"
+            class="remove-btn"
+            (click)="removeEnterprise(typeof enterprise === 'object' ? enterprise.enterpriseId : enterprise)"
+            title="Remover empresa">
+            ×
+          </button>
+        </span>
+
+        <div *ngIf="enterpriseObjects.length === 0" class="no-enterprises">
+          Nenhuma empresa associada
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancelar</button>
+      <button type="submit" class="btn btn-save" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Enviando...' : submitButtonText }}
+      </button>
+    </div>
+  </form>
+</div>

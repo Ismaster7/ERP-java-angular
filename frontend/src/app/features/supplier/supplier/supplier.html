@@ -1,1 +1,52 @@
-<p>supplier works!</p>
+<section class="enterprise-section">
+  <!-- Botões de Ações -->
+  <div class="buttons">
+    <app-action-button [link]="'/supplier/create'" label="Adicionar Fornecedor"></app-action-button>
+    <app-action-button label="Filtrar" (click)="toggleFilter()"></app-action-button>
+
+    @if(showFilter) {
+      <div @portalAnimation class="filter-container">
+        <input type="text" placeholder="Nome" [(ngModel)]="nameFilter">
+        <input type="text" placeholder="Documento" [(ngModel)]="documentFilter">
+        <app-action-button label="Pesquisar" (click)="searchSuppliers()"></app-action-button>
+        <app-action-button label="Limpar" (click)="clearFilters()"></app-action-button>
+      </div>
+    }
+  </div>
+
+  <!-- Lista de Fornecedores -->
+  <div class="enterprise-list" @listAnimation>
+    <div class="enterprise-header">
+      <div class="col document">Documento</div>
+      <div class="col name">Nome</div>
+      <div class="col email">Email</div>
+      <div class="col type">Tipo</div>
+      <div class="col actions">Ações</div>
+    </div>
+
+    @for (supplier of suppliers; track supplier.supplierId) {
+      <div class="enterprise-card" @filterAnimation>
+        <div class="col document">{{ supplier.document }}</div>
+        <div class="col name">{{ supplier.name }}</div>
+        <div class="col email">{{ supplier.email || '-' }}</div>
+        <div class="col type">{{ getSupplierTypeText(supplier.type) }}</div>
+
+        <div class="col actions">
+          <button class="edit-btn" (click)="editSupplier(supplier.supplierId)">✏️</button>
+          <button class="delete-btn"
+                  (click)="openDeleteConfirm(supplier.supplierId, supplier.name)">🗑️</button>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Modal de Confirmação -->
+@if(showConfirmModal) {
+  <app-confirm-modal
+    title="Confirmar Exclusão"
+    [message]="deleteMessage"
+    (confirm)="confirmDelete()"
+    (cancel)="cancelDelete()">
+  </app-confirm-modal>
+}

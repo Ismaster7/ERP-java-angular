@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { EnterpriseModel } from "../model/enterprise.model";
 import { EnterpriseCreateModel } from "../model/enterprise-create.model";
 import { EnterpriseUpdateModel } from "../model/enterprise-update-model";
-
+import { HttpParams } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
@@ -34,5 +34,18 @@ export class EnterpriseService {
 
   deleteEnterprise(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+   searchEnterprises(tradeName?: string, cnpj?: string): Observable<EnterpriseModel[]> {
+    let params = new HttpParams();
+
+    if (tradeName) {
+      params = params.set('tradeName', tradeName);
+    }
+
+    if (cnpj) {
+      params = params.set('cnpj', cnpj);
+    }
+
+    return this.http.get<EnterpriseModel[]>(`${this.apiUrl}/search`, { params });
   }
 }

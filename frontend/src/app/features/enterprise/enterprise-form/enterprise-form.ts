@@ -81,7 +81,7 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
 
   // Método para carregar todos os fornecedores para o dropdown
   loadSuppliers() {
-    this.supplierService.getEnterprises().subscribe({
+    this.supplierService.getSuppliers().subscribe({
       next: (data) => {
         this.suppliers = data;
         console.log('Todos os fornecedores carregados para dropdown:', this.suppliers);

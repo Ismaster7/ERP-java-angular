@@ -1,11 +1,11 @@
-export interface SupplierModel {
+export interface SupplierUpdateModel {
   supplierId: number;
   document: string;
   name: string;
   email?: string;
   cep: string;
-  type: number;
+    type: number;
   rg?: string;
-  birthdayDate?: string;
-  enterprises?: any[];
+  birthDate?: string;
+  enterprises: number[];
 }

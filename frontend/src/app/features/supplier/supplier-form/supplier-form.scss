@@ -35,7 +35,7 @@
   }
 }
 
-.enterprise-form {
+.supplier-form {
   .form-group {
     margin-bottom: 1.5rem;
 
@@ -46,7 +46,7 @@
       font-weight: 500;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 0.75rem;
       border: 1px solid rgba(255, 255, 255, 0.3);
@@ -198,7 +198,7 @@
   }
 }
 
-.supplier-selector {
+.enterprise-selector {
   display: flex;
   gap: 0.5rem;
   align-items: stretch;
@@ -218,11 +218,6 @@
       background: #2d3748;
       color: #fff;
       padding: 0.5rem;
-
-      &.minor-option {
-        color: #ff6b6b;
-        background: rgba(255, 107, 107, 0.1);
-      }
     }
 
     &:focus {
@@ -256,7 +251,7 @@
   }
 }
 
-.supplier-tags {
+.enterprise-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -297,55 +292,10 @@
       }
     }
 
-    &.minor {
-      border-color: #ffa94d;
-      background: rgba(255, 169, 77, 0.15);
-      color: #ffa94d;
-
-      .remove-btn {
-        color: #ff922b;
-
-        &:hover {
-          color: #f76707;
-        }
-      }
-    }
-
-    &.warning {
-      border-color: #ff6b6b;
-      background: rgba(255, 107, 107, 0.15);
-      color: #ff6b6b;
-      animation: pulseWarning 2s infinite;
-
-      .remove-btn {
-        color: #ff6b6b;
-
-        &:hover {
-          color: #ff4c4c;
-        }
-      }
-    }
-
     &:hover {
       transform: translateY(-1px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
-  }
-}
-
-.state-warning {
-  background: rgba(255, 193, 7, 0.15);
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  border-radius: 6px;
-  padding: 0.75rem;
-  color: #ffc107;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  animation: slideIn 0.3s ease;
-
-  &::before {
-    content: '⚠️';
-    margin-right: 0.5rem;
   }
 }
 
@@ -360,28 +310,8 @@
   }
 }
 
-@keyframes pulseWarning {
-  0%, 100% {
-    box-shadow: 0 0 0 rgba(255, 107, 107, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Container para fornecedores associados */
-.supplier-tags-container {
+/* Container para empresas associadas */
+.enterprise-tags-container {
   margin-top: 1rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
@@ -396,74 +326,96 @@
   }
 }
 
-/* Mensagem quando não há fornecedores */
-.no-suppliers {
+/* Mensagem quando não há empresas */
+.no-enterprises {
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
   padding: 0.5rem;
   text-align: center;
 }
 
-/* Melhoria na visualização das tags */
-.supplier-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  min-height: 50px;
-  align-items: flex-start;
-}
-
-/* Ajuste no posicionamento do aviso do Paraná */
-.state-warning {
-  margin-top: 1rem;
-  background: rgba(255, 193, 7, 0.15);
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  border-radius: 6px;
+// No supplier-form.scss
+.type-display {
   padding: 0.75rem;
-  color: #ffc107;
-  font-size: 0.9rem;
-  animation: slideIn 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+}
+// No supplier-form.scss
 
-  &::before {
-    content: '⚠️';
-    margin-right: 0.5rem;
+.enterprise-selector {
+  select.duplicate-warning {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+  }
+
+  option:disabled {
+    color: #6c757d;
+    font-style: italic;
   }
 }
 
-.filter-container {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  padding: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease-in-out;
-  animation: fadeIn 0.5s ease-in-out;
-  align-items: center;
-  flex-wrap: wrap;
-  width: 100%;
+.no-enterprises {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  padding: 0.5rem;
+  text-align: center;
+}
+// Mantenha os outros estilos do enterprise-form
+// Adicionar ao supplier-form.scss
 
-  input {
-    padding: 0.5rem;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
+.invalid {
+  border-color: #ff4d4f !important;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2);
+}
 
-    &::placeholder {
-      color: #666;
-    }
+.error-text {
+  color: #ff4d4f;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.type-display {
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+
+  &.physical {
+    border-color: #52c41a;
+    background: rgba(82, 196, 26, 0.1);
+  }
+
+  &.legal {
+    border-color: #1890ff;
+    background: rgba(24, 144, 255, 0.1);
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+.enterprise-selector {
+  select.duplicate {
+    border-color: #faad14;
+    box-shadow: 0 0 0 2px rgba(250, 173, 20, 0.2);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+}
+
+// Estilos para botão desabilitado
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+// Estilos para validação visual
+.form-group {
+  position: relative;
+
+  small {
+    display: block;
+    margin-top: 0.25rem;
   }
 }

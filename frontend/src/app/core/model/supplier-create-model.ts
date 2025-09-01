@@ -4,6 +4,6 @@ export interface SupplierCreateModel {
   email?: string;
   cep: string;
   rg?: string;
-  birthdayDate?: string;
-  enterprises: number[];
+  birthDate?: string;
+  enterprises: any[];
 }

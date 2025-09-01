@@ -5,7 +5,7 @@ import { SupplierModel } from '../model/supplier-model-box';
 import { EnterpriseCreateModel } from '../model/enterprise-create.model';
 import { EnterpriseModel } from '../model/enterprise.model';
 import { SupplierCreateModel } from '../model/supplier-create-model';
-
+import { HttpParams } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,23 +13,31 @@ export class SupplierServiceTs {
   constructor(private http: HttpClient) {}
   private apiUrl = 'http://localhost:8086/api/supplier/v1';
 
-  getEnterprises(): Observable<SupplierModel[]> {
+  getSuppliers(): Observable<SupplierModel[]> {
       return this.http.get<SupplierModel[]>(`${this.apiUrl}`);
     }
 
-    getEnterpriseById(id: number): Observable<SupplierModel> {
+    getSupplierById(id: number): Observable<SupplierModel> {
       return this.http.get<SupplierModel>(`${this.apiUrl}/${id}`);
     }
 
-    createEnterprise(enterprise: SupplierCreateModel): Observable<SupplierModel> {
-    return this.http.post<SupplierModel>(`${this.apiUrl}`, enterprise);
+    createSupplier(supplier: SupplierCreateModel): Observable<SupplierModel> {
+    return this.http.post<SupplierModel>(`${this.apiUrl}`, supplier);
     }
 
-    updateEnterprise(enterprise: SupplierModel): Observable<SupplierModel> {
-      return this.http.put<SupplierModel>(`${this.apiUrl}`, enterprise);
+    updateSupplier(supplier: SupplierModel): Observable<SupplierModel> {
+      return this.http.put<SupplierModel>(`${this.apiUrl}`, supplier);
     }
 
-    deleteEnterprise(id: number): Observable<void> {
+    deleteSupplier(id: number): Observable<void> {
       return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
+
+      searchSuppliers(name?: string, document?: string): Observable<SupplierModel[]> {
+    let params = new HttpParams();
+    if (name) params = params.set('name', name);
+    if (document) params = params.set('document', document);
+
+    return this.http.get<SupplierModel[]>(`${this.apiUrl}/search`, { params });
+  }
 }

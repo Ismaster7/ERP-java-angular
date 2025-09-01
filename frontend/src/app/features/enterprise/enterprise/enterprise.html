@@ -6,9 +6,10 @@
 
     @if(showFilter) {
       <div @portalAnimation class="filter-container">
-        <input type="text" placeholder="Nome Fantasia" >
-        <input type="text" placeholder="CNPJ" >
-        <app-action-button label="Aplicar Filtros" ></app-action-button>
+        <input type="text" placeholder="Nome Fantasia" [(ngModel)]="tradeNameFilter" #tradeNameInput>
+        <input type="text" placeholder="CNPJ" [(ngModel)]="cnpjFilter" #cnpjInput>
+        <app-action-button label="Aplicar Filtros" (click)="applyFilters()"></app-action-button>
+        <app-action-button label="Limpar" (click)="clearFilters()"></app-action-button>
       </div>
     }
   </div>
