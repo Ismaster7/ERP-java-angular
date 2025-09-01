@@ -108,7 +108,8 @@
   .enterprise-list {
     display: flex;
     flex-direction: column;
-
+    max-height: 700px;
+    overflow-y: scroll;
     .enterprise-header,
     .enterprise-card {
       display: grid;
@@ -127,23 +128,36 @@
         background-color: variables.$color-gray-dark;
       }
 
-      .actions {
-        display: flex;
-        justify-content: center;
+       .actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
 
-        .delete-btn {
-          background: transparent;
-          border: none;
-          cursor: pointer;
-          font-size: 1.2rem;
-          color: #ff4d4f;
+    .edit-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #1890ff;
 
-          &:hover {
-            transform: scale(1.1);
-          }
-        }
+      &:hover {
+        transform: scale(1.1);
       }
     }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #ff4d4f;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
   }
 }
 // Estilos para o modal de confirmação

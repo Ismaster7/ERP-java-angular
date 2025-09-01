@@ -1,7 +1,7 @@
 <section class="enterprise-section">
   <!-- Botões de Ações -->
   <div class="buttons">
-    <app-action-button label="Adicionar Empresa"></app-action-button>
+    <app-action-button [link]="'/enterprise/create'" label="Adicionar Empresa"></app-action-button>
     <app-action-button label="Filtrar" (click)="toggleFilter()"></app-action-button>
 
     @if(showFilter) {
@@ -14,7 +14,7 @@
   </div>
 
   <!-- Lista de Empresas -->
-  <div class="enterprise-list">
+  <div class="enterprise-list" @listAnimation>
     <div class="enterprise-header">
       <div class="col name">Nome Fantasia</div>
       <div class="col cnpj">CNPJ</div>
@@ -24,12 +24,15 @@
     </div>
 
     @for (enterprise of enterprises; track enterprise.enterpriseId) {
-      <div class="enterprise-card">
+      <div class="enterprise-card" @filterAnimation>
         <div class="col name">{{ enterprise.tradeName }}</div>
         <div class="col cnpj">{{ enterprise.cnpj }}</div>
         <div class="col cep">{{ enterprise.cep }}</div>
         <div class="col state">{{ enterprise.state }}</div>
         <div class="col actions">
+          <button class="edit-btn" (click)="editEnterprise(enterprise.enterpriseId)">
+            ✏️
+          </button>
           <button class="delete-btn" (click)="openDeleteConfirm(enterprise.enterpriseId, enterprise.tradeName)">
             🗑️
           </button>

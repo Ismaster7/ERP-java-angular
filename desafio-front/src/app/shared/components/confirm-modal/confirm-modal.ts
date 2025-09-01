@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
+import { NotificationService } from '../../../core/services/notification.service';
 @Component({
   selector: 'app-confirm-modal',
   standalone: true,
@@ -23,13 +23,17 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./confirm-modal.scss']
 })
 export class ConfirmModalComponent {
+
+  constructor(private notificationService: NotificationService) {}
   @Input() title: string = 'Confirmação';
   @Input() message: string = 'Tem certeza que deseja realizar esta ação?';
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 
+
   onConfirm() {
     this.confirm.emit();
+    this.notificationService.success( 'Ação confirmada com sucesso.', "sucesso");
   }
 
   onCancel() {

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { EnterpriseModel } from "../model/enterprise.model" // ajuste o caminho conforme sua estrutura
+import { EnterpriseModel } from "../model/enterprise.model";
+import { EnterpriseCreateModel } from "../model/enterprise-create.model";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,8 +20,8 @@ export class EnterpriseService {
     return this.http.get<EnterpriseModel>(`${this.apiUrl}/${id}`);
   }
 
-  createEnterprise(enterprise: EnterpriseModel): Observable<EnterpriseModel> {
-    return this.http.post<EnterpriseModel>(`${this.apiUrl}`, enterprise);
+  createEnterprise(enterprise: EnterpriseCreateModel): Observable<EnterpriseModel> {
+  return this.http.post<EnterpriseModel>(`${this.apiUrl}`, enterprise);
   }
 
   updateEnterprise(enterprise: EnterpriseModel): Observable<EnterpriseModel> {

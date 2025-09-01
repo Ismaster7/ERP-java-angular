@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ActionButton } from '../../../shared/buttons/action-button/action-button';
-import { trigger, state, style, transition, animate, group } from '@angular/animations';
+import { trigger, state, style, transition, animate, group, query, stagger } from '@angular/animations';
 import { EnterpriseModel } from '../../../core/model/enterprise.model';
 import { EnterpriseService } from '../../../core/services/enterprise-service';
 import { FormsModule } from '@angular/forms';
@@ -31,6 +32,25 @@ import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/
           transformOrigin: 'left center'
         }))
       ])
+    ]),
+     trigger('listAnimation', [
+      transition('* => *', [
+        query(':enter', [
+          style({ opacity: 0, transform: 'translateY(-20px)' }),
+          stagger('100ms', [
+            animate('200ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+          ])
+        ], { optional: true })
+      ])
+    ]),
+    trigger('filterAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-20px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' }))
+      ])
     ])
   ],
   templateUrl: './enterprise.html',
@@ -38,7 +58,10 @@ import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/
 })
 export class EnterpriseComponent implements OnInit {
 
-  constructor(private enterpriseService: EnterpriseService) {}
+  constructor(
+    private enterpriseService: EnterpriseService,
+    private router: Router
+  ) {}
 
   enterprises: EnterpriseModel[] = [];
   showFilter: boolean = false;
@@ -59,6 +82,11 @@ export class EnterpriseComponent implements OnInit {
         console.error('Error fetching enterprises:', error);
       }
     );
+  }
+
+  editEnterprise(enterpriseId: number) {
+    // Navega para a rota de edição
+    this.router.navigate(['/enterprise/edit', enterpriseId]);
   }
 
   openDeleteConfirm(enterpriseId: number, enterpriseName: string) {
