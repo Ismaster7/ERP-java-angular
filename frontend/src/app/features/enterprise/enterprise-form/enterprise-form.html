@@ -1,0 +1,151 @@
+<div class="form-container">
+  <div class="form-header">
+    <h2>{{ title }}</h2>
+    <button type="button" class="back-btn" (click)="onCancel()">← Voltar</button>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="enterprise-form">
+    <!-- Nome Fantasia -->
+    <div class="form-group">
+      <label for="tradeName">Nome Fantasia *</label>
+      <input
+        type="text"
+        id="tradeName"
+        [(ngModel)]="formEnterprise.tradeName"
+        name="tradeName"
+        required
+        placeholder="Digite o nome fantasia da empresa">
+    </div>
+
+    <!-- CNPJ -->
+    <div class="form-group">
+      <label for="cnpj">CNPJ *</label>
+      <input
+        type="text"
+        id="cnpj"
+        [(ngModel)]="formEnterprise.cnpj"
+        name="cnpj"
+        required
+        placeholder="00.000.000/0000-00">
+    </div>
+
+    <!-- CEP com consulta -->
+    <div class="form-group">
+      <label for="cep">CEP *</label>
+      <div class="cep-container">
+        <input
+          type="text"
+          id="cep"
+          [(ngModel)]="formEnterprise.cep"
+          name="cep"
+          required
+          (input)="onCepInput($event)"
+          placeholder="00000-000"
+          maxlength="9">
+        <button
+          type="button"
+          class="btn-consultar"
+          (click)="consultarCep()"
+          [disabled]="isLoadingCep || !formEnterprise.cep">
+          {{ isLoadingCep ? 'Consultando...' : 'Consultar' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Estado (desabilitado) -->
+    <div class="form-group">
+      <label for="state">Estado *</label>
+      <input
+        type="text"
+        id="state"
+        [(ngModel)]="formEnterprise.state"
+        name="state"
+        required
+        disabled
+        placeholder="Será preenchido automaticamente ao consultar o CEP">
+    </div>
+
+    <!-- Fornecedores -->
+    <div class="form-group">
+      <label for="suppliers">Fornecedores</label>
+
+      <!-- Seletor para adicionar novos fornecedores -->
+      <div class="supplier-selector">
+        <select
+          [(ngModel)]="selectedSupplierId"
+          name="suppliers"
+          class="supplier-select"
+          id="suppliers">
+          <option [ngValue]="null">-- Selecione um fornecedor para adicionar --</option>
+          <option
+            *ngFor="let supplier of suppliers"
+            [ngValue]="supplier.supplierId"
+            [class.minor-option]="isSupplierUnderagePhysicalPerson(supplier)">
+            {{ supplier.name }} ({{ getSupplierTypeText(supplier.type) }})
+            <span *ngIf="isSupplierUnderagePhysicalPerson(supplier)">- Menor de idade</span>
+          </option>
+        </select>
+        <button
+          type="button"
+          class="btn-add"
+          (click)="addSupplier()"
+          [disabled]="!selectedSupplierId">
+          Adicionar
+        </button>
+      </div>
+
+      <!-- Container para fornecedores associados -->
+      <div class="supplier-tags-container">
+        <h4>Fornecedores Associados:</h4>
+        <div class="supplier-tags">
+          <span
+            *ngFor="let supplier of supplierObjects"
+            class="tag"
+            [class.minor]="isSupplierUnderagePhysicalPerson(supplier)"
+            [class.warning]="isParanaState() && isSupplierUnderagePhysicalPerson(supplier)">
+
+            <span class="tag-content">
+              {{ supplier.name }}
+              <span class="tag-type">({{ getSupplierTypeText(supplier.type) }})</span>
+              <span
+                *ngIf="isSupplierUnderagePhysicalPerson(supplier)"
+                class="minor-indicator"
+                title="Pessoa Física menor de idade">
+                👶
+              </span>
+            </span>
+
+            <button
+              type="button"
+              class="remove-btn"
+              (click)="removeSupplier(supplier.supplierId)"
+              title="Remover fornecedor">
+              ×
+            </button>
+          </span>
+
+          <!-- Mensagem quando não há fornecedores -->
+          <div *ngIf="supplierObjects.length === 0" class="no-suppliers">
+            Nenhum fornecedor associado
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensagem de alerta para Paraná - POSICIONADA ABAIXO DAS TAGS -->
+      <div *ngIf="isParanaState()" class="state-warning">
+        ⚠️ Empresa do Paraná: Não é permitido fornecedores Pessoa Física menores de idade
+      </div>
+    </div>
+
+    <!-- Ações do formulário -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancelar</button>
+      <button
+        type="submit"
+        class="btn btn-save"
+        [disabled]="!formEnterprise.state">
+        {{ submitButtonText }}
+      </button>
+    </div>
+  </form>
+</div>

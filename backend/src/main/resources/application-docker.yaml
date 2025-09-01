@@ -1,0 +1,26 @@
+cep:
+  api: https://viacep.com.br/ws/{cep}/json/
+spring:
+  flyway:
+    enabled: false
+  application:
+    name: desafio
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/desafio?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+spring-doc:
+  paths-to-match: /api/**/v1/**
+  swagger-ui:
+    use-root-path: true
+
+server:
+  port: 8086
