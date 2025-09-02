@@ -8,7 +8,7 @@
     <div class="form-group">
       <label for="document">Documento (CPF/CNPJ) *  (Apenas numeros)</label>
       <input
-        type="text"
+        type="number"
         id="document"
         [(ngModel)]="formSupplier.document"
         name="document"
@@ -76,9 +76,9 @@
     </div>
 
     <div class="form-group" *ngIf="isPhysicalPerson">
-      <label for="rg">RG *</label>
+      <label for="rg">RG * (Apenas numeros)</label>
       <input
-        type="text"
+        type="number"
         id="rg"
         [(ngModel)]="formSupplier.rg"
         name="rg"
