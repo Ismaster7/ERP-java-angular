@@ -36,6 +36,7 @@ Agora, basta acessar http://localhost:4999 para ver o projeto
 - 🔄 Testes unitários .  (veja seção API)
 - 📚 Documentação completa da API via Swagger (veja seção API).
 - 🔍 Filtros dinâmicos tanto para fornecedores quanto para empresas.
+- Tela responsiva para diferentes dispositivos
 - 🔄 Sistema de adição e remoção de entidades com relacionamento Many-to-Many.
 - 🌐 Consumo de API externa para validação de CEP:
 - No frontend e no backend.
