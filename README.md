@@ -23,7 +23,7 @@ MYSQL_PASSWORD=root
 ````
 ou use outras credenciais, se você quiser.
 Com Docker e Docker Compose instalados, abra a pasta dentro de algum terminal e execute:
-
+obs: Se não conseguir rodar via docker por algum motivo, será necessário alterar o arquivo application-docker.yaml no java com os dados do seu banco de dados local. O front-end pode ser executado com ng serve.
 ```bash
 docker compose up --build -d
 # (use sudo no início se estiver em uma máquina Linux)
@@ -36,6 +36,7 @@ Agora, basta acessar http://localhost:4999 para ver o projeto
 - 🔄 Testes unitários .  (veja seção API)
 - 📚 Documentação completa da API via Swagger (veja seção API).
 - 🔍 Filtros dinâmicos tanto para fornecedores quanto para empresas.
+- Tela responsiva para diferentes dispositivos
 - 🔄 Sistema de adição e remoção de entidades com relacionamento Many-to-Many.
 - 🌐 Consumo de API externa para validação de CEP:
 - No frontend e no backend.
