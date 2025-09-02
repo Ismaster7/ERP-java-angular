@@ -83,7 +83,7 @@ export class SupplierFormComponent implements OnInit, OnChanges {
       },
       error: (error) => {
         console.error('Error loading enterprises:', error);
-        this.notificationService.error(''Não foi possível carregar a lista de empresas', 'Erro');
+        this.notificationService.error('Não foi possível carregar a lista de empresas', 'Erro');
       }
     });
   }
