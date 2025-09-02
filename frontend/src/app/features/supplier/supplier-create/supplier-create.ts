@@ -61,15 +61,14 @@ export class SupplierCreate {
     const errorPayload = error.error;
 
     if (Array.isArray(errorPayload)) {
-      // É um array de mensagens
+      console.log("e um array")
       errorPayload.forEach((msg: string) => {
+        
         this.notificationService.error("Erro", msg);
       });
     } else if (typeof errorPayload === 'string') {
-      // É uma única mensagem em string
       this.notificationService.error("Erro", errorPayload);
     } else {
-      // Fallback genérico
       this.notificationService.error("Erro", error.error.exeption);
     }
   }
