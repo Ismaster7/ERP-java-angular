@@ -121,8 +121,8 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
   onSubmit() {
     if (!this.formEnterprise.state) {
       this.notificationService.error(
-        'Campo Obrigatório',
-        'É necessário consultar o CEP para obter o estado'
+        'É necessário consultar o CEP para obter o estado',
+        'Erro'
       );
       return;
     }
@@ -135,8 +135,8 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
       if (invalidSuppliers.length > 0) {
         const names = invalidSuppliers.map(s => s.name).join(', ');
         this.notificationService.error(
-          'Restrição do Paraná',
-          `Não é permitido fornecedores Pessoa Física menores de idade no Paraná: ${names}`
+          'Não é permitido fornecedores Pessoa Física menores de idade no Paraná: ${names}',
+          `Atenção`
         );
         return;
       }
