@@ -58,10 +58,10 @@ export class SupplierCreate {
   console.error('Erro ao criar fornecedor:', error);
 
 
-/*    const errorPayload = error.error;
+/*    
     console.log('Tipo de error.error:', typeof error.error);
 console.log('Conteúdo de error.error:', error.error); */
-
+const errorPayload = error.error;
     if (Array.isArray(errorPayload)) {
       console.log("e um array")
       errorPayload.forEach((msg: string) => {
