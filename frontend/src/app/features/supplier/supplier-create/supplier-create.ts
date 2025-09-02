@@ -59,6 +59,7 @@ export class SupplierCreate {
 
         if (error.status === 400) {
           this.notificationService.error("Erro", error.error.exeption);
+        }
       }
     });
   }
