@@ -2,8 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { SupplierModel } from '../model/supplier-model-box';
-import { EnterpriseCreateModel } from '../model/enterprise-create.model';
-import { EnterpriseModel } from '../model/enterprise.model';
 import { SupplierCreateModel } from '../model/supplier-create-model';
 import { HttpParams } from '@angular/common/http';
 @Injectable({

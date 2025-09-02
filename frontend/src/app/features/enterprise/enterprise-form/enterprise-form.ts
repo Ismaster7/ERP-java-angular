@@ -80,7 +80,7 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
         this.suppliers = data;
       },
       error: (err) => {
-        this.notificationService.error('Erro', 'Não foi possível carregar a lista de fornecedores');
+       // this.notificationService.error('Erro na api', 'Não foi possível carregar a lista de fornecedores');
       }
     });
   }
@@ -168,18 +168,18 @@ export class EnterpriseFormComponent implements OnInit, OnChanges {
 
   addSupplier() {
     if (!this.selectedSupplierId) {
-      this.notificationService.warning('Atenção', 'Selecione um fornecedor');
+      this.notificationService.warning('Selecione um fornecedor', '');
       return;
     }
 
     const supplier = this.suppliers.find(s => s.supplierId === this.selectedSupplierId);
     if (!supplier) {
-      this.notificationService.error('Erro', 'Fornecedor não encontrado');
+      this.notificationService.error('Fornecedor não encontrado', '');
       return;
     }
 
     if (this.supplierObjects.some(s => s.supplierId === supplier.supplierId)) {
-      this.notificationService.warning('Atenção', 'Fornecedor já adicionado');
+      this.notificationService.warning('Fornecedor já adicionado', '');
       return;
     }
 
