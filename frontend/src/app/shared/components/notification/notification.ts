@@ -15,6 +15,7 @@ import { NotificationService } from '../../../core/services/notification.service
         [ngClass]="notification.type"
       >
         <div class="message">{{ notification.title }}</div>
+        <div class="message">{{ notification.message }}</div>
         <div class="progress">
           <div
             class="progress-bar"
