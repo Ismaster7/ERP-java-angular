@@ -55,12 +55,25 @@ export class SupplierCreate {
         this.router.navigate(['/supplier']);
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error creating supplier:', error);
+  console.error('Erro ao criar fornecedor:', error);
 
-        if (error.status === 400) {
-          this.notificationService.error("Erro", error.error.exeption);
-        }
-      }
+  if (error.status === 400) {
+    const errorPayload = error.error;
+
+    if (Array.isArray(errorPayload)) {
+      // É um array de mensagens
+      errorPayload.forEach((msg: string) => {
+        this.notificationService.error("Erro", msg);
+      });
+    } else if (typeof errorPayload === 'string') {
+      // É uma única mensagem em string
+      this.notificationService.error("Erro", errorPayload);
+    } else {
+      // Fallback genérico
+      this.notificationService.error("Erro", error.error.exeption);
+    }
+  }
+}
     });
   }
 
