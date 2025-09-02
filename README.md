@@ -23,7 +23,7 @@ MYSQL_PASSWORD=root
 ````
 ou use outras credenciais, se você quiser.
 Com Docker e Docker Compose instalados, abra a pasta dentro de algum terminal e execute:
-
+obs: Se não conseguir rodar via docker por algum motivo, será necessário alterar o arquivo application-docker.yaml no java com os dados do seu banco de dados local. O front-end pode ser executado com ng serve.
 ```bash
 docker compose up --build -d
 # (use sudo no início se estiver em uma máquina Linux)
