@@ -28,9 +28,12 @@ Com Docker e Docker Compose instalados, abra a pasta dentro de algum terminal e 
 docker compose up --build -d
 # (use sudo no início se estiver em uma máquina Linux)
 ````
+
+Agora, basta acessar http://localhost:4999 para ver o projeto
 ---
 ## 🛠 Features
 - ✅ API disponível em JSON e XML (veja seção API).
+- 🔄 Testes unitários .  (veja seção API)
 - 📚 Documentação completa da API via Swagger (veja seção API).
 - 🔍 Filtros dinâmicos tanto para fornecedores quanto para empresas.
 - 🔄 Sistema de adição e remoção de entidades com relacionamento Many-to-Many.
@@ -40,7 +43,8 @@ docker compose up --build -d
 ---
 ## 📚 API
 
-Para acessar a documentação da api, basta rodar o docker-compose como nas instruções de instalação e depois acessar o link:
+- Para acessar a documentação da api, basta rodar o docker-compose como nas instruções de instalação e depois acessar o link:
 http://localhost:8999/swagger-ui/index.html
 
-Para ver as resposta da API com XML, é necessário alguma plataforma de testes de api, como o postman.
+- Para ver as resposta da API com XML, é necessário alguma plataforma de testes de api, como o postman.
+- A Api possui 2 testes unitários em src/test/java/br.com.desafio.tecnico.desafio. Lá tem um mock de dados tambem.
