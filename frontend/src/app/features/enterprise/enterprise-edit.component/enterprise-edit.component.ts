@@ -74,7 +74,7 @@ export class EnterpriseEditComponent implements OnInit {
         this.router.navigate(['/enterprise']);
       },
       error: (error) => {
-         this.notificationService.error('Erro', error.exception);
+         this.notificationService.error('Erro', error.error.exeption);
       }
     });
   }
