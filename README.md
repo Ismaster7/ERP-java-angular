@@ -32,7 +32,7 @@ docker compose up --build -d
 Agora, basta acessar http://localhost:4999 para ver o projeto
 ---
 ## 🛠 Features
-- ✅ API disponível em JSON e XML (veja seção API).
+- ✅ API disponível em JSON e XML (Content Negociation) (veja seção API).
 - 🔄 Testes unitários .  (veja seção API)
 - 📚 Documentação completa da API via Swagger (veja seção API).
 - 🔍 Filtros dinâmicos tanto para fornecedores quanto para empresas.
@@ -47,5 +47,12 @@ Agora, basta acessar http://localhost:4999 para ver o projeto
 - Para acessar a documentação da api, basta rodar o docker-compose como nas instruções de instalação e depois acessar o link:
 http://localhost:8999/swagger-ui/index.html
 
-- Para ver as resposta da API com XML, é necessário alguma plataforma de testes de api, como o postman.
+- Para ver as resposta da API com XML, é necessário alguma plataforma de testes de api, como o postman. Usando ele como exemplo:
+
+ 
+1. Abra o Postman e vá até a aba Headers da requisição.
+ 
+2. Adicione a chave Accept com o valor `application/xml` (para receber resposta em XML).
+
+   
 - A Api possui 2 testes unitários em src/test/java/br.com.desafio.tecnico.desafio. Lá tem um mock de dados tambem.
