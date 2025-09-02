@@ -67,7 +67,7 @@ export class SupplierFormComponent implements OnInit, OnChanges {
   }
 
   determineSupplierType() {
-    const cleanDocument = this.formSupplier.document.replace(/\D/g, '');
+    const cleanDocument = String(this.formSupplier.document).replace(/\D/g, '');
     this.isPhysicalPerson = cleanDocument.length === 11;
     this.formSupplier.type = this.isPhysicalPerson ? 0 : 1;
   }
