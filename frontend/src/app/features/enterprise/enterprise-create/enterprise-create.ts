@@ -46,7 +46,7 @@ export class EnterpriseCreateComponent {
       error: (error) => {
         console.error('Error creating enterprise:', error);
         if (error.status === 400 && error.error?.exeption?.includes('CNPJ')) {
-          this.notificationService.error(error, error.exception);
+          this.notificationService.error(error, error.error?.exception?);
         } else {
           this.notificationService.error('Erro', 'Não foi possível criar a empresa');
         }
