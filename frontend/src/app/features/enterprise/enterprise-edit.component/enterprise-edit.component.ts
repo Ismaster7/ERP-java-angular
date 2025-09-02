@@ -74,11 +74,7 @@ export class EnterpriseEditComponent implements OnInit {
         this.router.navigate(['/enterprise']);
       },
       error: (error) => {
-        if (error.status === 400 && error.error?.exeption?.includes('CNPJ')) {
-          this.notificationService.error('Erro', 'CNPJ já cadastrado em outra empresa');
-        } else {
-          this.notificationService.error('Erro', 'Não foi possível atualizar a empresa');
-        }
+         this.notificationService.error('Erro', error.error.exception);
       }
     });
   }
