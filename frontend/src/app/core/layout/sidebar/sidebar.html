@@ -1,22 +1,53 @@
-<nav class="sidebar">
-      <img src="images/ERP.png" class="logo" alt="">
+<!-- Sidebar normal (desktop) -->
+<nav class="sidebar" *ngIf="sidebarOpen && !isMobile">
+  <img src="images/ERP.png" class="logo" alt="Logo ERP">
 
   <ul class="sidebar-menu">
+    <li>
+      <a routerLink="/enterprise" class="selector-button" (click)="closeSidebar()">
+        <mat-icon>business</mat-icon>
+        <span>{{ gerenciarEmpresas }}</span>
+      </a>
+    </li>
 
-    <!-- <li><app-selector-button [link]="'/dashboard'" [label]="dashboard">
-  <mat-icon icon>dashboard</mat-icon>
-</app-selector-button>
-</li> -->
-
-    <li><app-selector-button [link]="'/enterprise'" [label]="gerenciarEmpresas">
-  <mat-icon icon>business</mat-icon>
-</app-selector-button>
-</li>
-
-    <li><app-selector-button [link]="'/supplier'" [label]="gerenciarFornecedores">
-  <mat-icon icon>person</mat-icon>
-</app-selector-button>
-</li>
+    <li>
+      <a routerLink="/supplier" class="selector-button" (click)="closeSidebar()">
+        <mat-icon>person</mat-icon>
+        <span>{{ gerenciarFornecedores }}</span>
+      </a>
+    </li>
   </ul>
 </nav>
 
+<!-- Sidebar mobile (overlay) -->
+<div class="mobile-sidebar-overlay" *ngIf="sidebarOpen && isMobile" (click)="closeSidebar()">
+  <nav class="mobile-sidebar" (click)="$event.stopPropagation()">
+    <div class="sidebar-header">
+      <img src="images/ERP.png" class="logo" alt="Logo ERP">
+      <button class="close-btn" (click)="closeSidebar()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li>
+        <a routerLink="/enterprise" class="selector-button" (click)="closeSidebar()">
+          <mat-icon>business</mat-icon>
+          <span>{{ gerenciarEmpresas }}</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/supplier" class="selector-button" (click)="closeSidebar()">
+          <mat-icon>person</mat-icon>
+          <span>{{ gerenciarFornecedores }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<!-- Botão para abrir sidebar no mobile -->
+<button *ngIf="isMobile && !sidebarOpen" class="mobile-menu-btn" (click)="toggleSidebar()">
+  <mat-icon>menu</mat-icon>
+</button>

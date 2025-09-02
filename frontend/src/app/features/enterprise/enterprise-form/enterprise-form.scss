@@ -1,6 +1,7 @@
 .form-container {
   max-width: 600px;
   margin: 2rem auto;
+  overflow-y: auto;
   padding: 2rem;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);

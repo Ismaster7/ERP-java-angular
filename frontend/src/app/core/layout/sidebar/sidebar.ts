@@ -1,22 +1,46 @@
-import { Component } from '@angular/core';
-import { SelectorButton } from '../../../shared/buttons/selector-button/selector-button';
-import { MatIcon } from '@angular/material/icon';
+import { Component, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [SelectorButton, MatIcon],
+  standalone: true,
+  imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './sidebar.html',
-  styleUrl: './sidebar.scss'
+  styleUrls: ['./sidebar.scss']
 })
-export class Sidebar {
+export class SidebarComponent {
+  isMobile = false;
+  sidebarOpen = false;
+
   dashboard = "Dashboard";
   gerenciarEmpresas = "Gerenciar Empresas";
   gerenciarFornecedores = "Gerenciar Fornecedores";
 
- showText(text: string){
-  alert(text)
- }
-
+  ngOnInit() {
+    this.checkScreenSize();
   }
 
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
 
+  private checkScreenSize() {
+    this.isMobile = window.innerWidth <= 850;
+    if (!this.isMobile) {
+      this.sidebarOpen = true; // Sempre visível em desktop
+    }
+  }
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar() {
+    if (this.isMobile) {
+      this.sidebarOpen = false;
+    }
+  }
+}

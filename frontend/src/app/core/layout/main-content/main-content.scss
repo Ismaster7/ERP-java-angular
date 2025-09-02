@@ -2,14 +2,33 @@
 @use "../../../../styles/mixin" as mixin;
 
 .main-content {
- // @include mixin.background-blue;
-  grid-column: 2; // segunda coluna
-  grid-row: 1;    // mesma linha da sidebar
+  grid-column: 2;
+  grid-row: 1;
   color: variables.$primary-color;
   padding: 10px;
   height: 100vh;
   background: url('../../../../../public/images/background.jpg') no-repeat center center fixed;
   background-size: cover;
+  overflow-y: auto;
 }
 
+@media screen and (max-width: 850px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
 
+  .main-content {
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: 60px; /* Espaço para o botão mobile */
+  }
+}
+
+@import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}

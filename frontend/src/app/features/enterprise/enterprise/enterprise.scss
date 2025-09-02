@@ -2,7 +2,7 @@
 
 .enterprise-section{
   width: 90%;
-  height: 90vh;
+  height: auto;
   margin: auto;
   backdrop-filter: blur(20px);
   padding: 1rem;
@@ -179,4 +179,6 @@
   position: relative;
 }
 
+@media screen {
 
+}
