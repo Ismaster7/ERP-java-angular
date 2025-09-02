@@ -58,20 +58,8 @@ export class SupplierCreate {
         console.error('Error creating supplier:', error);
 
         if (error.status === 400) {
+          this.notificationService.error("Erro", error.error.exeption);
           const errorMessage = error.error?.message || error.error?.exeption || '';
-
-          if (errorMessage.includes('Documento')) {
-            this.notificationService.error('Erro', 'Documento (CPF/CNPJ) já cadastrado');
-          } else if (errorMessage.includes('RG')) {
-            this.notificationService.error('Erro', 'RG é obrigatório para Pessoa Física');
-          } else if (errorMessage.includes('birthdayDate') || errorMessage.includes('data de nascimento')) {
-            this.notificationService.error('Erro', 'Data de nascimento é obrigatória para Pessoa Física');
-          } else {
-            this.notificationService.error('Erro', 'Dados inválidos. Verifique os campos obrigatórios.');
-          }
-        } else {
-          this.notificationService.error('Erro', 'Não foi possível criar o fornecedor');
-        }
       }
     });
   }
