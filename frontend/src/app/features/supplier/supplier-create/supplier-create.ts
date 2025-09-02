@@ -59,6 +59,8 @@ export class SupplierCreate {
 
   if (error.status === 400) {
     const errorPayload = error.error;
+    console.log('Tipo de error.error:', typeof error.error);
+console.log('Conteúdo de error.error:', error.error);
 
     if (Array.isArray(errorPayload)) {
       console.log("e um array")
@@ -66,9 +68,7 @@ export class SupplierCreate {
         
         this.notificationService.error("Erro", msg);
       });
-    } else if (typeof errorPayload === 'string') {
-      this.notificationService.error("Erro", errorPayload);
-    } else {
+    }  else {
       this.notificationService.error("Erro", error.error.exeption);
     }
   }
