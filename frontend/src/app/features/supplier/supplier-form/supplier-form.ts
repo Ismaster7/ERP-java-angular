@@ -83,7 +83,7 @@ export class SupplierFormComponent implements OnInit, OnChanges {
       },
       error: (error) => {
         console.error('Error loading enterprises:', error);
-        this.notificationService.error('Erro', 'Não foi possível carregar a lista de empresas');
+        this.notificationService.error(''Não foi possível carregar a lista de empresas', 'Erro');
       }
     });
   }
@@ -130,26 +130,26 @@ export class SupplierFormComponent implements OnInit, OnChanges {
     this.determineSupplierType();
 
     if (!this.isValidDocument()) {
-      this.notificationService.error('Erro', 'Documento deve ter 11 dígitos (CPF) ou 14 dígitos (CNPJ)');
+      this.notificationService.error('Documento deve ter 11 dígitos (CPF) ou 14 dígitos (CNPJ)', 'Erro');
       this.isSubmitting = false;
       return;
     }
 
     if (!this.isValidCep()) {
-      this.notificationService.error('Erro', 'CEP deve ter 8 dígitos');
+      this.notificationService.error('CEP deve ter 8 dígitos', 'Erro');
       this.isSubmitting = false;
       return;
     }
 
     if (this.isPhysicalPerson) {
       if (!this.formSupplier.rg || this.formSupplier.rg.trim() === '') {
-        this.notificationService.error('Erro', 'RG é obrigatório para Pessoa Física');
+        this.notificationService.error('RG é obrigatório para Pessoa Física', 'Erro');
         this.isSubmitting = false;
         return;
       }
 
       if (!this.formSupplier.birthdayDate) {
-        this.notificationService.error('Erro', 'Data de nascimento é obrigatória para Pessoa Física');
+        this.notificationService.error('Data de nascimento é obrigatória para Pessoa Física', 'Erro');
         this.isSubmitting = false;
         return;
       }
@@ -157,7 +157,7 @@ export class SupplierFormComponent implements OnInit, OnChanges {
       const birthDate = new Date(this.formSupplier.birthdayDate);
       const today = new Date();
       if (birthDate > today) {
-        this.notificationService.error('Erro', 'Data de nascimento não pode ser uma data futura');
+        this.notificationService.error('Data de nascimento não pode ser uma data futura', 'Erro');
         this.isSubmitting = false;
         return;
       }
@@ -210,13 +210,13 @@ export class SupplierFormComponent implements OnInit, OnChanges {
 
   addEnterprise() {
     if (!this.selectedEnterpriseId) {
-      this.notificationService.warning('Atenção', 'Selecione uma empresa para adicionar');
+      this.notificationService.warning('Selecione uma empresa para adicionar', '');
       return;
     }
 
     const enterprise = this.enterprises.find(e => e.enterpriseId === this.selectedEnterpriseId);
     if (!enterprise) {
-      this.notificationService.error('Erro', 'Empresa não encontrada');
+      this.notificationService.error('Empresa não encontrada', 'Erro');
       return;
     }
 
@@ -233,14 +233,14 @@ export class SupplierFormComponent implements OnInit, OnChanges {
     this.enterpriseObjects.push(enterprise);
     this.selectedEnterpriseId = null;
 
-    this.notificationService.success('Sucesso', 'Empresa adicionada com sucesso');
+    this.notificationService.success('Empresa adicionada com sucesso', '');
   }
 
   removeEnterprise(enterpriseId: number) {
     this.enterpriseObjects = this.enterpriseObjects.filter(e =>
       (typeof e === 'object' ? e.enterpriseId : e) !== enterpriseId
     );
-    this.notificationService.info('Info', 'Empresa removida');
+    this.notificationService.info('Empresa removida', '');
   }
 
   isEnterpriseAlreadyAdded(enterpriseId: number): boolean {
