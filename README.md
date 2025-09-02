@@ -34,6 +34,7 @@ Agora, basta acessar http://localhost:4999 para ver o projeto
 ## 🛠 Features
 - ✅ API disponível em JSON e XML (Content Negociation) (veja seção API).
 - 🔄 Testes unitários .  (veja seção API)
+- 🤝 Posibilidade de adicionar Empresas e fornecedores de ambos os lados, tanto na UI quanto na API
 - 📚 Documentação completa da API via Swagger (veja seção API).
 - 🔍 Filtros dinâmicos tanto para fornecedores quanto para empresas.
 - Tela responsiva para diferentes dispositivos
