@@ -12,6 +12,7 @@
         id="document"
         [(ngModel)]="formSupplier.document"
         name="document"
+        max=14
         required
         (input)="onDocumentChange()"
         placeholder="Digite CPF (11 dígitos) ou CNPJ (14 dígitos)"
