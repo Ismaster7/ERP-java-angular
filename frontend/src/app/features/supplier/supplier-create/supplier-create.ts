@@ -57,10 +57,10 @@ export class SupplierCreate {
       error: (error: HttpErrorResponse) => {
   console.error('Erro ao criar fornecedor:', error);
 
-  if (error.status === 400) {
-    const errorPayload = error.error;
+
+/*    const errorPayload = error.error;
     console.log('Tipo de error.error:', typeof error.error);
-console.log('Conteúdo de error.error:', error.error);
+console.log('Conteúdo de error.error:', error.error); */
 
     if (Array.isArray(errorPayload)) {
       console.log("e um array")
@@ -71,7 +71,7 @@ console.log('Conteúdo de error.error:', error.error);
     }  else {
       this.notificationService.error("Erro", error.error.exeption);
     }
-  }
+  
 }
     });
   }
